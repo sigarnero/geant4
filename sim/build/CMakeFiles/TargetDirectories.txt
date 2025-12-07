@@ -1,4 +1,0 @@
-/home/simo-garne/geant4/tutorial/sim/build/CMakeFiles/sim.dir
-/home/simo-garne/geant4/tutorial/sim/build/CMakeFiles/Simulation1.dir
-/home/simo-garne/geant4/tutorial/sim/build/CMakeFiles/edit_cache.dir
-/home/simo-garne/geant4/tutorial/sim/build/CMakeFiles/rebuild_cache.dir
