@@ -1,0 +1,60 @@
+# Build directories
+build/
+build-*/
+cmake-build-*/
+out/
+bin/
+obj/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+_deps/
+*.cmake
+
+# Compiled binaries and libraries
+*.exe
+*.out
+*.app
+*.so
+*.dylib
+*.dll
+*.o
+*.a
+*.lib
+
+# Geant4 specific (if applicable)
+G4*data/
+*.root
+*.mac
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files
+*.log
+*.tmp
+Save and exit (Ctrl+X, then Y, then Enter in nano).
+Method 2: Use echo/cat
+bashcat > .gitignore << 'EOF'
+# Build directories
+build/
+build-*/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+
+# Binaries
+*.exe
+*.out
+*.o
+EOF
