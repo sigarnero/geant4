@@ -1,0 +1,25 @@
+# Test diversi spessori del radiatore
+
+# Primo test: 5 mm
+/detector/radiatorThickness 0.005 m
+/run/reinitializeGeometry
+/gun/momentumAmp 8 GeV
+/run/beamOn 100
+
+# Secondo test: 10 mm
+/detector/radiatorThickness 0.01 m
+/run/reinitializeGeometry
+/gun/momentumAmp 8 GeV
+/run/beamOn 100
+
+# Terzo test: 20 mm
+/detector/radiatorThickness 0.02 m
+/run/reinitializeGeometry
+/gun/momentumAmp 8 GeV
+/run/beamOn 100
+
+# Quarto test: 50 mm
+/detector/radiatorThickness 0.05 m
+/run/reinitializeGeometry
+/gun/momentumAmp 1 GeV
+/run/beamOn 100
