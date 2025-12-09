@@ -11,6 +11,14 @@ MyDetectorConstruction::MyDetectorConstruction(){
     fMessenger->DeclareProperty("isAtmosphere", isAtmosphere, "Toggle Atmosphere setup");
     fMessenger->DeclareProperty("radiatorThickness", radiatorThickness, "Thickness of the Cherenkov radiator");
 
+    // Inizializza tutti i puntatori a nullptr
+    solidRadiator = nullptr;
+    solidDetector = nullptr;
+    solidMirror = nullptr;
+    logicRadiator = nullptr;
+    logicDetector = nullptr;
+    logicMirror = nullptr;
+
     nCols = 10;
     nRows = 10;
 
@@ -28,7 +36,9 @@ MyDetectorConstruction::MyDetectorConstruction(){
     isAtmosphere = false;
 }
 
-MyDetectorConstruction::~MyDetectorConstruction(){}
+MyDetectorConstruction::~MyDetectorConstruction(){
+    delete fMessenger;
+}
 
 void MyDetectorConstruction::ConstructSDandField(){
     MySensitiveDetector *sensDet = new MySensitiveDetector("SensitiveDetector");
@@ -36,6 +46,155 @@ void MyDetectorConstruction::ConstructSDandField(){
     if(logicDetector != NULL){
     logicDetector->SetSensitiveDetector(sensDet);
     }
+}
+
+void MyDetectorConstruction::ConstructCherenkov(){
+
+    // IMPORTANTE: Cancella e ricrea il solidRadiator con il nuovo spessore
+    if(solidRadiator != nullptr) {
+        delete solidRadiator;
+    }
+    
+    solidRadiator = new G4Box("solidRadiator", 0.4*m, 0.4*m, radiatorThickness);
+    
+    // Ricrea anche il logicRadiator per applicare le modifiche
+    if(logicRadiator != nullptr) {
+        delete logicRadiator;
+    }
+    
+    logicRadiator = new G4LogicalVolume(solidRadiator, Aerogel, "logicRadiator");
+    
+    physRadiator = new G4PVPlacement(0, G4ThreeVector(0,0,0.15*m), logicRadiator, "physRadiator", logicWorld, false, 0, true);
+
+    G4VisAttributes *radiatorVisAtt = new G4VisAttributes(G4Color(0.5, 0.5, 0., 1.));
+    radiatorVisAtt->SetForceWireframe(true);
+    logicRadiator->SetVisAttributes(radiatorVisAtt);
+
+    fScoringVolume = logicRadiator;
+
+    rotX = new G4RotationMatrix();
+    rotX->rotateX(-45*degree);
+
+    // Spherical Mirror
+    if(solidRadiator != nullptr) {
+        solidMirror = new G4Sphere("solidMirror", 0.5*m, 0.51*m, 0*degree, 360*degree, 0*degree, 30*degree);
+        logicMirror = new G4LogicalVolume(solidMirror, worldMat, "logicMirror");
+        skin = new G4LogicalSkinSurface("skin", logicMirror, mirrorSurface);
+        physMirror = new G4PVPlacement(0, G4ThreeVector(0, 0, -0.1*m), logicMirror, "physMirror", logicWorld, false, 0, true);
+
+        G4VisAttributes *mirrorVisAtt = new G4VisAttributes(G4Color(0.8, 0.8, 0.8, 0.3));
+        mirrorVisAtt->SetForceWireframe(true);
+        logicMirror->SetVisAttributes(mirrorVisAtt);
+
+        solidMirror_1 = new G4Box("solidMirror_1", 0.25*m,0.25*m, 0.005*m);
+        logicMirror_1 = new G4LogicalVolume(solidMirror_1, worldMat, "logicMirror_1");
+        skin_1 = new G4LogicalSkinSurface("skin_1", logicMirror_1, mirrorSurface);
+        physMirror_1 = new G4PVPlacement(rotX, G4ThreeVector(0, 0, -0.2*m), logicMirror_1, "physMirror_1", logicWorld, false, 0, true);
+
+        G4VisAttributes *mirrorVisAtt_1 = new G4VisAttributes(G4Color(0.1, 0.8, 0.9, 0.4));
+        mirrorVisAtt_1->SetForceWireframe(true);
+        logicMirror_1->SetVisAttributes(mirrorVisAtt_1);
+    }
+
+    if(solidDetector != nullptr){
+        delete solidDetector;
+    }
+
+    solidDetector = new G4Box("solidDetector", 0.3*m/nRows, 0.01*m,  0.3*m/nCols);
+
+    if(logicDetector != nullptr){
+        delete logicDetector;
+    }
+
+    logicDetector = new G4LogicalVolume(solidDetector, worldMat, "logicDetector");
+    
+    for(G4int i = 0; i < nRows; i++){
+        for(G4int j = 0; j < nCols; j++){
+            physDetector = new G4PVPlacement(0, G4ThreeVector(-0.15*m+(i+0.5)*0.3*m/nRows, -0.49*m, -0.35*m+(j+0.5)*0.3*m/nCols),
+            logicDetector, "physDetector", logicWorld, false, j+i*nCols, true);
+        }
+    }
+
+    // Stampa di debug per confermare il nuovo spessore
+    G4cout << "=== RADIATOR THICKNESS: " << radiatorThickness/mm << " mm ===" << G4endl;
+}
+
+void MyDetectorConstruction::ConstructScintillator(){
+
+    // solidScintillator = new G4Tubs("solidScintillator", 10*cm, 20*cm, 30*cm, 0.*deg, 360.*deg);
+    solidScintillator = new G4Box("solidScintillator", 5*cm, 5*cm, 6*cm);
+
+    logicScintillator = new G4LogicalVolume(solidScintillator, NaI, "logicScintillator");
+
+    skin = new G4LogicalSkinSurface("skin", logicWorld, mirrorSurface);
+
+    // fScoringVolume = logicScintillator;
+
+    solidDetector = new G4Box("solidDetector", 1*cm, 5*cm, 6*cm);
+
+    logicDetector  = new G4LogicalVolume(solidDetector, worldMat, "logicDetector");
+
+    for(G4int i = 0; i < 6; i++){
+        for(G4int j = 0; j < 16; j++){
+
+            G4Rotate3D rotZ(j*22.5*deg, G4ThreeVector(0,0,1));
+            G4Translate3D transXScint(G4ThreeVector(5./tan(22.5/2*deg)*cm + 5.*cm, 0*cm, -40*cm + i*15*cm));
+            G4Translate3D transXDet(G4ThreeVector(5./tan(22.5/2*deg)*cm + 6.*cm + 5*cm, 0*cm, -40*cm + i*15*cm));
+
+            G4Transform3D transformScint = (rotZ)*(transXScint);
+            G4Transform3D transformDet = (rotZ)*(transXDet);
+
+            physScintillator = new G4PVPlacement(transformScint, logicScintillator, "physScintillator", logicWorld, false, 0, true);
+            physDetector = new G4PVPlacement(transformDet, logicDetector, "physDetector", logicWorld, false, 0, true);
+        }
+    }
+}
+
+void MyDetectorConstruction::ConstructTOF(){
+    solidDetector = new G4Box("solidDetector", 1*m, 1*m, 0.1*m);
+    logicDetector = new G4LogicalVolume(solidDetector, worldMat, "logicDetector");
+    physDetector = new G4PVPlacement(0, G4ThreeVector(0.*m, 0.*m, -4*m), logicDetector, "physDetector", logicWorld, false, 0, true);
+    physDetector = new G4PVPlacement(0, G4ThreeVector(0.*m, 0.*m, -3*m), logicDetector, "physDetector", logicWorld, false, 1, true);
+}
+
+void MyDetectorConstruction::ConstructAtmosphere(){
+    solidAtmosphere = new G4Box("solidAtmosphere", xWorld, yWorld, zWorld/10.);
+
+    for (G4int i =0; i < 10; i++){
+        logicAtmosphere[i] = new G4LogicalVolume(solidAtmosphere, Air[i], "logicAtmosphere");
+        physAtmosphere[i] = new G4PVPlacement(0, G4ThreeVector(0, 0, zWorld/10.*2*i - zWorld + zWorld/10.), logicAtmosphere[i], "physAtmosphere", logicWorld, false, i, true);
+    }
+}
+
+G4VPhysicalVolume *MyDetectorConstruction::Construct(){
+    
+    // Create the solid
+    solidWorld = new G4Box("solidWorld", xWorld, yWorld, zWorld); // half lengths
+
+    // Logical volume -> insert the material into the solid
+    logicWorld = new G4LogicalVolume(solidWorld, worldMat, "logicWorld");
+
+    // Physical volume -> place the logical volume into the physical world [This is mother volume]
+    physWorld = new G4PVPlacement(0, G4ThreeVector(0,0,0), logicWorld, "physWorld", 0, false, 0, true);
+
+    if(isCherenkov){
+        ConstructCherenkov();
+        G4cout << "=== CHERENKOV GEOMETRY CONSTRUCTED ===" << G4endl;
+    }
+
+    if(isScintillator){
+        ConstructScintillator();
+    }
+
+    if(isTOF){
+        ConstructTOF();
+    }
+    
+    if(isAtmosphere){
+        ConstructAtmosphere();
+    }
+
+    return physWorld;
 }
 
 void MyDetectorConstruction::DefineMaterial(){
@@ -125,118 +284,4 @@ void MyDetectorConstruction::DefineMaterial(){
         Air[i]->AddElement(N, 0.7);
         Air[i]->AddElement(O, 0.3);             
     }
-}
-
-void MyDetectorConstruction::ConstructCherenkov(){
-
-    solidRadiator = new G4Box("solidRadiator", 0.4*m, 0.4*m, radiatorThickness);
-    logicRadiator = new G4LogicalVolume(solidRadiator, Aerogel, "logicRadiator");
-    physRadiator = new G4PVPlacement(0, G4ThreeVector(0,0,0.15*m), logicRadiator, "physRadiator", logicWorld, false, 0, true);
-
-    G4VisAttributes *radiatorVisAtt = new G4VisAttributes(G4Color(0.5, 0.5, 0., 1.));
-    radiatorVisAtt->SetForceWireframe(true);
-    // radiatorVisAtt->SetForceSolid(true);
-    logicRadiator->SetVisAttributes(radiatorVisAtt);
-
-    fScoringVolume = logicRadiator;
-
-    // Spherical Mirror
-    solidMirror = new G4Sphere("solidMirror", 0.5*m, 0.51*m, 0*degree, 360*degree, 0*degree, 30*degree);
-    logicMirror = new G4LogicalVolume(solidMirror, worldMat, "logicMirror");
-    skin = new G4LogicalSkinSurface("skin", logicMirror, mirrorSurface);
-    physMirror = new G4PVPlacement(0, G4ThreeVector(0, 0, -0.1*m), logicMirror, "physMirror", logicWorld, false, 0, true);
-
-    // View mirror
-    G4VisAttributes *mirrorVisAtt = new G4VisAttributes(G4Color(0.8, 0.8, 0.8, 0.3));  // Grigio semi-trasparente
-    mirrorVisAtt->SetForceWireframe(true);
-    logicMirror->SetVisAttributes(mirrorVisAtt);
-
-    // Now we define the sensitive detectors, in this case some photosensor for the Cherenkov light
-    solidDetector = new G4Box("solidDetector", xWorld/nRows, yWorld/nCols, 0.01*m);
-    logicDetector = new G4LogicalVolume(solidDetector, worldMat, "logicDetector");
-    // Here we want an array of detectors
-    for(G4int i=0; i < nRows; i++){
-        for(G4int j=0; j < nCols; j++){
-            physDetector = new G4PVPlacement(0, -G4ThreeVector(-0.5*m + (i+0.5)*m/nRows,
-            -0.5*m + (j+0.5)*m/nCols, 0.49*m), logicDetector, "physDetector", logicWorld, false, i+j*nRows, true);
-        }
-    }
-}
-
-void MyDetectorConstruction::ConstructScintillator(){
-
-    // solidScintillator = new G4Tubs("solidScintillator", 10*cm, 20*cm, 30*cm, 0.*deg, 360.*deg);
-    solidScintillator = new G4Box("solidScintillator", 5*cm, 5*cm, 6*cm);
-
-    logicScintillator = new G4LogicalVolume(solidScintillator, NaI, "logicScintillator");
-
-    skin = new G4LogicalSkinSurface("skin", logicWorld, mirrorSurface);
-
-    // fScoringVolume = logicScintillator;
-
-    solidDetector = new G4Box("solidDetector", 1*cm, 5*cm, 6*cm);
-
-    logicDetector  = new G4LogicalVolume(solidDetector, worldMat, "logicDetector");
-
-    for(G4int i = 0; i < 6; i++){
-        for(G4int j = 0; j < 16; j++){
-
-            G4Rotate3D rotZ(j*22.5*deg, G4ThreeVector(0,0,1));
-            G4Translate3D transXScint(G4ThreeVector(5./tan(22.5/2*deg)*cm + 5.*cm, 0*cm, -40*cm + i*15*cm));
-            G4Translate3D transXDet(G4ThreeVector(5./tan(22.5/2*deg)*cm + 6.*cm + 5*cm, 0*cm, -40*cm + i*15*cm));
-
-            G4Transform3D transformScint = (rotZ)*(transXScint);
-            G4Transform3D transformDet = (rotZ)*(transXDet);
-
-            physScintillator = new G4PVPlacement(transformScint, logicScintillator, "physScintillator", logicWorld, false, 0, true);
-            physDetector = new G4PVPlacement(transformDet, logicDetector, "physDetector", logicWorld, false, 0, true);
-        }
-    }
-}
-
-void MyDetectorConstruction::ConstructTOF(){
-    solidDetector = new G4Box("solidDetector", 1*m, 1*m, 0.1*m);
-    logicDetector = new G4LogicalVolume(solidDetector, worldMat, "logicDetector");
-    physDetector = new G4PVPlacement(0, G4ThreeVector(0.*m, 0.*m, -4*m), logicDetector, "physDetector", logicWorld, false, 0, true);
-    physDetector = new G4PVPlacement(0, G4ThreeVector(0.*m, 0.*m, -3*m), logicDetector, "physDetector", logicWorld, false, 1, true);
-}
-
-void MyDetectorConstruction::ConstructAtmosphere(){
-    solidAtmosphere = new G4Box("solidAtmosphere", xWorld, yWorld, zWorld/10.);
-
-    for (G4int i =0; i < 10; i++){
-        logicAtmosphere[i] = new G4LogicalVolume(solidAtmosphere, Air[i], "logicAtmosphere");
-        physAtmosphere[i] = new G4PVPlacement(0, G4ThreeVector(0, 0, zWorld/10.*2*i - zWorld + zWorld/10.), logicAtmosphere[i], "physAtmosphere", logicWorld, false, i, true);
-    }
-}
-
-G4VPhysicalVolume *MyDetectorConstruction::Construct(){
-    
-    // Create the solid
-    solidWorld = new G4Box("solidWorld", xWorld, yWorld, zWorld); // half lengths
-
-    // Logical volume -> insert the material into the solid
-    logicWorld = new G4LogicalVolume(solidWorld, worldMat, "logicWorld");
-
-    // Physical volume -> place the logical volume into the physical world [This is mother volume]
-    physWorld = new G4PVPlacement(0, G4ThreeVector(0,0,0), logicWorld, "physWorld", 0, false, 0, true);
-
-    if(isCherenkov){
-        ConstructCherenkov();
-        G4cout << "=== CHERENKOV GEOMETRY CONSTRUCTED ===" << G4endl;
-    }
-
-    if(isScintillator){
-        ConstructScintillator();
-    }
-
-    if(isTOF){
-        ConstructTOF();
-    }
-    
-    if(isAtmosphere){
-        ConstructAtmosphere();
-    }
-
-    return physWorld;
 }

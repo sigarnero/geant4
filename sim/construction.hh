@@ -11,6 +11,7 @@
 #include "G4Sphere.hh"
 #include "G4PVPlacement.hh"
 #include "G4ThreeVector.hh"
+#include "G4RotationMatrix.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4GenericMessenger.hh"
 #include "G4OpticalSurface.hh"
@@ -30,11 +31,11 @@ class MyDetectorConstruction : public G4VUserDetectorConstruction{
 
     private:
 
-        G4Box *solidWorld, *solidRadiator, *solidDetector, *solidScintillator, *solidAtmosphere;
+        G4Box *solidWorld, *solidRadiator, *solidDetector, *solidScintillator, *solidAtmosphere, *solidMirror_1;
         G4Sphere *solidMirror;
         // G4Tubs *solidScintillator;
-        G4LogicalVolume *logicWorld, *logicRadiator, *logicDetector, *logicScintillator, *logicAtmosphere[10], *logicMirror;      // Up to 10 layers of atmosphere
-        G4VPhysicalVolume *physWorld, *physRadiator, *physDetector, *physScintillator, *physAtmosphere[10], *physMirror;
+        G4LogicalVolume *logicWorld, *logicRadiator, *logicDetector, *logicScintillator, *logicAtmosphere[10], *logicMirror, *logicMirror_1;      // Up to 10 layers of atmosphere
+        G4VPhysicalVolume *physWorld, *physRadiator, *physDetector, *physScintillator, *physAtmosphere[10], *physMirror, *physMirror_1;
         G4Material *SiO2, *H2O, *Aerogel, *worldMat, *NaI, *Air[10];        // Air not constant in atmosphere layers
         G4Element *C, *Na, *I, *N, *O;
 
@@ -59,9 +60,11 @@ class MyDetectorConstruction : public G4VUserDetectorConstruction{
 
         G4OpticalSurface *mirrorSurface;
 
-        G4LogicalSkinSurface *skin;
+        G4LogicalSkinSurface *skin, *skin_1;
 
         G4double radiatorThickness;
+
+        G4RotationMatrix *rotX;
 };
 
 #endif
