@@ -108,6 +108,7 @@ void MyDetectorConstruction::ConstructCherenkov(){
     }
 
     logicDetector = new G4LogicalVolume(solidDetector, worldMat, "logicDetector");
+    logicDetector->SetVisAttributes(new G4VisAttributes(G4Colour(1,0,0,0.5)));
     
     for(G4int i = 0; i < nRows; i++){
         for(G4int j = 0; j < nCols; j++){
@@ -249,9 +250,10 @@ void MyDetectorConstruction::DefineMaterial(){
 
     G4double energy[2] = {1.239841939*eV/0.9, 1.239841939*eV/0.2}; // 0.2um - 0.9um,depends on the wavelength
     G4double rindexAerogel[2] = {1.1, 1.1}; // range of refractive index
-    G4double rindexAir[2] = {1.0, 1.0}; // range of refractive index
-    G4double rindexNaI[2] = {1.78, 1.78}; // range of refractive index
-    G4double rindexMgF2[2] = {1.38, 1.42}; // range of refractive index
+    G4double rindexAir[2] = {1.0, 1.0}; 
+    G4double rindexNaI[2] = {1.78, 1.78}; 
+    G4double rindexMgF2[2] = {1.38, 1.42}; 
+    G4double rindexSiO2[2] = {1.47, 1.47}; 
     G4double fraction[2] = {1.0, 1.0};   // Fraction of light emitted in the fast component
     G4double reflectivity[2] = {0.95, 0.95};   // Fraction of reflected photons
 
@@ -261,8 +263,11 @@ void MyDetectorConstruction::DefineMaterial(){
     G4MaterialPropertiesTable *mptWorld = new G4MaterialPropertiesTable();
     mptWorld->AddProperty("RINDEX", energy, rindexAir, 2);
 
-    G4MaterialPropertiesTable *mptMgF2 = new G4MaterialPropertiesTable();
-    mptMgF2->AddProperty("RINDEX", energy, rindexMgF2, 2);
+    // G4MaterialPropertiesTable *mptMgF2 = new G4MaterialPropertiesTable();
+    // mptMgF2->AddProperty("RINDEX", energy, rindexMgF2, 2);
+
+    // G4MaterialPropertiesTable *mptSiO2 = new G4MaterialPropertiesTable();
+    // mptSiO2->AddProperty("RINDEX", energy, rindexSiO2, 2);
 
     // These information you can usually find online
     G4MaterialPropertiesTable *mptNaI = new G4MaterialPropertiesTable();
@@ -275,6 +280,8 @@ void MyDetectorConstruction::DefineMaterial(){
     NaI->SetMaterialPropertiesTable(mptNaI);  
     Aerogel->SetMaterialPropertiesTable(mptAerogel);
     worldMat->SetMaterialPropertiesTable(mptWorld);  
+    // MgF2->SetMaterialPropertiesTable(mptMgF2);
+    // SiO2->SetMaterialPropertiesTable(mptSiO2);
     
     mirrorSurface = new G4OpticalSurface("mirrorSurface");
     // Just default staff but important for the reflective skin
