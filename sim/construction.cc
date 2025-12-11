@@ -34,6 +34,7 @@ MyDetectorConstruction::MyDetectorConstruction(){
     isScintillator = false;
     isTOF = false;   
     isAtmosphere = false;
+    isGasPM = false;
 }
 
 MyDetectorConstruction::~MyDetectorConstruction(){
@@ -166,6 +167,16 @@ void MyDetectorConstruction::ConstructAtmosphere(){
     }
 }
 
+void MyDetectorConstruction::ConstructGasPM(){
+    solidWindow = new G4Box("solidWindow", 0.1*m, 0.1*m, 0.005*m);
+    logicWindow = new G4LogicalVolume(solidWindow, MgF2, "logicWindow");
+    physWindow = new G4PVPlacement(0, G4ThreeVector(0.*m, 0.1*m, 0.25*m), logicWindow, "physWindow", logicWorld, false, 0, true);
+
+    G4VisAttributes *radiatorVisAtt = new G4VisAttributes(G4Color(1., 0.5, 0., 1.));
+    radiatorVisAtt->SetForceWireframe(true);
+    logicWindow->SetVisAttributes(radiatorVisAtt);
+}
+
 G4VPhysicalVolume *MyDetectorConstruction::Construct(){
     
     // Create the solid
@@ -192,6 +203,10 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct(){
     
     if(isAtmosphere){
         ConstructAtmosphere();
+    }
+
+    if(isGasPM){
+        ConstructGasPM();
     }
 
     return physWorld;
@@ -221,15 +236,22 @@ void MyDetectorConstruction::DefineMaterial(){
 
     Na = nist->FindOrBuildElement("Na");
     I = nist->FindOrBuildElement("I");
+    Mg = nist->FindOrBuildElement("Mg");
+    F = nist->FindOrBuildElement("F");
 
     NaI = new G4Material("NaI", 3.67*g/cm3, 2);
     NaI->AddElement(Na, 1);
     NaI->AddElement(I, 1);
 
+    MgF2 = new G4Material("MgF2", 3.13*g/cm3, 2);
+    MgF2->AddElement(Mg, 1);
+    MgF2->AddElement(F, 2);
+
     G4double energy[2] = {1.239841939*eV/0.9, 1.239841939*eV/0.2}; // 0.2um - 0.9um,depends on the wavelength
     G4double rindexAerogel[2] = {1.1, 1.1}; // range of refractive index
     G4double rindexAir[2] = {1.0, 1.0}; // range of refractive index
     G4double rindexNaI[2] = {1.78, 1.78}; // range of refractive index
+    G4double rindexMgF2[2] = {1.38, 1.42}; // range of refractive index
     G4double fraction[2] = {1.0, 1.0};   // Fraction of light emitted in the fast component
     G4double reflectivity[2] = {0.95, 0.95};   // Fraction of reflected photons
 
@@ -238,6 +260,9 @@ void MyDetectorConstruction::DefineMaterial(){
 
     G4MaterialPropertiesTable *mptWorld = new G4MaterialPropertiesTable();
     mptWorld->AddProperty("RINDEX", energy, rindexAir, 2);
+
+    G4MaterialPropertiesTable *mptMgF2 = new G4MaterialPropertiesTable();
+    mptMgF2->AddProperty("RINDEX", energy, rindexMgF2, 2);
 
     // These information you can usually find online
     G4MaterialPropertiesTable *mptNaI = new G4MaterialPropertiesTable();

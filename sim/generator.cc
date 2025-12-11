@@ -13,7 +13,7 @@ MyPrimaryGenerator::MyPrimaryGenerator(){
 
     fParticleGun->SetParticlePosition(pos);
     fParticleGun->SetParticleMomentumDirection(mom);
-    fParticleGun->SetParticleMomentum(8. * GeV);
+    fParticleGun->SetParticleMomentum(5. * GeV);
     fParticleGun->SetParticleDefinition(particle);
 }
 

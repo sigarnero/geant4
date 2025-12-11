@@ -31,13 +31,13 @@ class MyDetectorConstruction : public G4VUserDetectorConstruction{
 
     private:
 
-        G4Box *solidWorld, *solidRadiator, *solidDetector, *solidScintillator, *solidAtmosphere, *solidMirror_1;
+        G4Box *solidWorld, *solidRadiator, *solidDetector, *solidScintillator, *solidAtmosphere, *solidMirror_1, *solidWindow;
         G4Sphere *solidMirror;
         // G4Tubs *solidScintillator;
-        G4LogicalVolume *logicWorld, *logicRadiator, *logicDetector, *logicScintillator, *logicAtmosphere[10], *logicMirror, *logicMirror_1;      // Up to 10 layers of atmosphere
-        G4VPhysicalVolume *physWorld, *physRadiator, *physDetector, *physScintillator, *physAtmosphere[10], *physMirror, *physMirror_1;
-        G4Material *SiO2, *H2O, *Aerogel, *worldMat, *NaI, *Air[10];        // Air not constant in atmosphere layers
-        G4Element *C, *Na, *I, *N, *O;
+        G4LogicalVolume *logicWorld, *logicRadiator, *logicDetector, *logicScintillator, *logicAtmosphere[10], *logicMirror, *logicMirror_1, *logicWindow;      // Up to 10 layers of atmosphere
+        G4VPhysicalVolume *physWorld, *physRadiator, *physDetector, *physScintillator, *physAtmosphere[10], *physMirror, *physMirror_1, *physWindow;
+        G4Material *SiO2, *H2O, *Aerogel, *worldMat, *NaI, *Air[10], *MgF2;        // Air not constant in atmosphere layers
+        G4Element *C, *Na, *I, *N, *O, *Mg, *F;
 
         void DefineMaterial();
 
@@ -45,6 +45,7 @@ class MyDetectorConstruction : public G4VUserDetectorConstruction{
         void ConstructScintillator();
         void ConstructTOF();
         void ConstructAtmosphere();
+        void ConstructGasPM();
 
         virtual void ConstructSDandField();
 
@@ -56,7 +57,7 @@ class MyDetectorConstruction : public G4VUserDetectorConstruction{
 
         G4double xWorld, yWorld, zWorld;  
         
-        G4bool isCherenkov, isScintillator, isTOF, isAtmosphere;
+        G4bool isCherenkov, isScintillator, isTOF, isAtmosphere, isGasPM;
 
         G4OpticalSurface *mirrorSurface;
 
