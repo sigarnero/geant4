@@ -41,11 +41,12 @@ MyDetectorConstruction::~MyDetectorConstruction(){
     delete fMessenger;
 }
 
+// This connects our logicDetctor to the sensitive detector concept -> Now the detector is sensitive
 void MyDetectorConstruction::ConstructSDandField(){
     MySensitiveDetector *sensDet = new MySensitiveDetector("SensitiveDetector");
     
     if(logicDetector != NULL){
-    logicDetector->SetSensitiveDetector(sensDet);
+        logicDetector->SetSensitiveDetector(sensDet);
     }
 }
 
@@ -101,7 +102,10 @@ void MyDetectorConstruction::ConstructCherenkov(){
         delete solidDetector;
     }
 
-    solidDetector = new G4Box("solidDetector", 0.3*m/nRows, 0.01*m,  0.3*m/nCols);
+    solidDetector = new G4Box("solidDetector", 
+                          (0.3*m/nRows)/2.0 - 0.1*mm, // Half-length minus gap
+                          0.01*m, 
+                          (0.3*m/nCols)/2.0 - 0.1*mm);
 
     if(logicDetector != nullptr){
         delete logicDetector;

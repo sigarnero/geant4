@@ -24,7 +24,12 @@ MyRunAction::MyRunAction(){
 
     man->CreateNtuple("Scoring", "Scoring");
     man->CreateNtupleDColumn("fEdep");
-    man->FinishNtuple(2);   
+    man->FinishNtuple(2);  
+    
+    man->CreateNtuple("Cherenkov", "Cherenkov photons");
+    man->CreateNtupleDColumn("thetaC_rad");
+    man->CreateNtupleDColumn("thetaC_deg");
+    man->FinishNtuple(3);
 }
 
 MyRunAction::~MyRunAction(){}
