@@ -10,6 +10,9 @@ void MyTrackingAction::PreUserTrackingAction(const G4Track* track){
     if(track->GetDefinition() == G4OpticalPhoton::OpticalPhotonDefinition()){
         const G4VProcess* creator = track->GetCreatorProcess();
         if(creator && creator->GetProcessName() == "Cerenkov"){
+            // Increment the photon counter
+            fEventAction->IncrementCherenkovPhotonCount();
+            
             G4ThreeVector photonDir = track->GetMomentumDirection();
             G4ThreeVector parentDir = fEventAction->GetParentMomentum(track->GetTrackID()); 
             double angle = parentDir.angle(photonDir);

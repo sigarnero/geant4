@@ -8,6 +8,7 @@
 #include "G4AnalysisManager.hh"
 
 #include "event.hh"
+#include "run.hh"
 
 class MyTrackingAction : public G4UserTrackingAction
 {

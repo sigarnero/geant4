@@ -263,6 +263,7 @@ void MyDetectorConstruction::DefineMaterial(){
     G4double rindexNaI[2] = {1.78, 1.78}; 
     G4double rindexMgF2[2] = {1.38, 1.42}; 
     G4double rindexSiO2[2] = {1.47, 1.47}; 
+    G4double rindexH2O[2] = {1.33, 1.33}; 
     G4double fraction[2] = {1.0, 1.0};   // Fraction of light emitted in the fast component
     G4double reflectivity[2] = {0.95, 0.95};   // Fraction of reflected photons
 
@@ -271,6 +272,9 @@ void MyDetectorConstruction::DefineMaterial(){
 
     G4MaterialPropertiesTable *mptWorld = new G4MaterialPropertiesTable();
     mptWorld->AddProperty("RINDEX", energy, rindexAir, 2);
+
+    G4MaterialPropertiesTable *mptH2O = new G4MaterialPropertiesTable();
+    mptH2O->AddProperty("RINDEX", energy, rindexH2O, 2);
 
     // G4MaterialPropertiesTable *mptMgF2 = new G4MaterialPropertiesTable();
     // mptMgF2->AddProperty("RINDEX", energy, rindexMgF2, 2);
@@ -289,8 +293,9 @@ void MyDetectorConstruction::DefineMaterial(){
     NaI->SetMaterialPropertiesTable(mptNaI);  
     Aerogel->SetMaterialPropertiesTable(mptAerogel);
     worldMat->SetMaterialPropertiesTable(mptWorld);  
-    // MgF2->SetMaterialPropertiesTable(mptMgF2);
+    H2O->SetMaterialPropertiesTable(mptH2O);
     // SiO2->SetMaterialPropertiesTable(mptSiO2);
+    // MgF2->SetMaterialPropertiesTable(mptMgF2);
     
     mirrorSurface = new G4OpticalSurface("mirrorSurface");
     // Just default staff but important for the reflective skin

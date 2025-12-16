@@ -20,9 +20,12 @@ class MyEventAction : public G4UserEventAction{
         void StoreParentMomentum(G4int trackID, G4ThreeVector momentum);
         G4ThreeVector GetParentMomentum(G4int trackID);
 
+        void IncrementCherenkovPhotonCount() { fCherenkovPhotonCount++; }
+
     private:
         G4double fEdep;
         std::map<G4int, G4ThreeVector> fParentMomentumMap;
+        G4int fCherenkovPhotonCount;
 };
 
 #endif
