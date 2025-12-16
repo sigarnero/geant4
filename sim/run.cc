@@ -30,6 +30,8 @@ MyRunAction::MyRunAction(){
     man->CreateNtupleDColumn("thetaC_rad");
     man->CreateNtupleDColumn("thetaC_deg");
     man->FinishNtuple(3);
+
+    man->CreateH1("CherenkovAngle", "Cherenkov Angle Distribution", 100, 0., 50.0);
 }
 
 MyRunAction::~MyRunAction(){}

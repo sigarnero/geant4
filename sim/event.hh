@@ -17,8 +17,12 @@ class MyEventAction : public G4UserEventAction{
 
         void AddEdep(G4double edep);
 
+        void StoreParentMomentum(G4int trackID, G4ThreeVector momentum);
+        G4ThreeVector GetParentMomentum(G4int trackID);
+
     private:
         G4double fEdep;
+        std::map<G4int, G4ThreeVector> fParentMomentumMap;
 };
 
 #endif

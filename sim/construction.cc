@@ -190,6 +190,11 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct(){
     // Logical volume -> insert the material into the solid
     logicWorld = new G4LogicalVolume(solidWorld, worldMat, "logicWorld");
 
+    // To make the world invisible
+    G4VisAttributes* worldVis = new G4VisAttributes();
+    worldVis->SetVisibility(false);
+    logicWorld->SetVisAttributes(worldVis);
+
     // Physical volume -> place the logical volume into the physical world [This is mother volume]
     physWorld = new G4PVPlacement(0, G4ThreeVector(0,0,0), logicWorld, "physWorld", 0, false, 0, true);
 
