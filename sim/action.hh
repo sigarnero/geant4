@@ -15,6 +15,7 @@ class MyActionInitialization : public G4VUserActionInitialization{
         ~MyActionInitialization();
 
         virtual void Build() const;     // Particle gun, starts the beam
+        virtual void BuildForMaster() const;     // For multithreading
 };
 
 #endif
