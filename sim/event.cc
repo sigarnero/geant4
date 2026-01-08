@@ -22,8 +22,10 @@ void MyEventAction::BeginOfEventAction(const G4Event*)
 
 void MyEventAction::EndOfEventAction(const G4Event*)
 {
-    G4cout << "Total energy deposited in event: " << fEdep  << G4endl;
-    // G4cout << "Number of generated photons in event: " << fCherenkovPhotonCount  << G4endl;
+    #ifndef G4MULTITHREADED
+        G4cout << "Total energy deposited in event: " << fEdep  << G4endl;
+        // G4cout << "Number of photons reaching the detectors in event: " << fCherenkovPhotonCount  << G4endl;
+    #endif
 
     G4AnalysisManager *man = G4AnalysisManager::Instance();
 
