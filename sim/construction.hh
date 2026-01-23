@@ -9,6 +9,7 @@
 #include "G4Box.hh"
 #include "G4Tubs.hh"
 #include "G4Sphere.hh"
+#include "G4Cons.hh"
 #include "G4PVPlacement.hh"
 #include "G4ThreeVector.hh"
 #include "G4RotationMatrix.hh"
@@ -34,6 +35,7 @@ class MyDetectorConstruction : public G4VUserDetectorConstruction{
         G4Box *solidWorld, *solidRadiator, *solidDetector, *solidScintillator, *solidAtmosphere, *solidMirror_1, *solidWindow;
         G4Sphere *solidMirror;
         // G4Tubs *solidScintillator;
+        G4Cons *solidRadiatorProx;
         G4LogicalVolume *logicWorld, *logicRadiator, *logicDetector, *logicScintillator, *logicAtmosphere[10], *logicMirror, *logicMirror_1, *logicWindow;      // Up to 10 layers of atmosphere
         G4VPhysicalVolume *physWorld, *physRadiator, *physDetector, *physScintillator, *physAtmosphere[10], *physMirror, *physMirror_1, *physWindow;
         G4Material *SiO2, *H2O, *Aerogel, *worldMat, *NaI, *Air[10], *MgF2;        // Air not constant in atmosphere layers
@@ -46,6 +48,8 @@ class MyDetectorConstruction : public G4VUserDetectorConstruction{
         void ConstructTOF();
         void ConstructAtmosphere();
         void ConstructGasPM();
+        void ConstructFusedSilica();
+        void ConstructFusedSilicaProx();
 
         virtual void ConstructSDandField();
 
@@ -57,7 +61,7 @@ class MyDetectorConstruction : public G4VUserDetectorConstruction{
 
         G4double xWorld, yWorld, zWorld;  
         
-        G4bool isCherenkov, isScintillator, isTOF, isAtmosphere, isGasPM;
+        G4bool isFusedSilica, isFusedSilicaProx, isCherenkov, isScintillator, isTOF, isAtmosphere, isGasPM;
 
         G4OpticalSurface *mirrorSurface;
 

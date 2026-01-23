@@ -9,6 +9,8 @@ MyDetectorConstruction::MyDetectorConstruction(){
     fMessenger->DeclareProperty("isScintillator", isScintillator, "Toggle Scintillator setup");
     fMessenger->DeclareProperty("isTOF", isTOF, "Toggle TOF setup");
     fMessenger->DeclareProperty("isAtmosphere", isAtmosphere, "Toggle Atmosphere setup");
+    fMessenger->DeclareProperty("isFusedSilica", isFusedSilica, "Toggle Fused silica bar interal reflection setup");
+    fMessenger->DeclareProperty("isFusedSilicaProx", isFusedSilicaProx, "Toggle Fused silica proximity focus setup");
     fMessenger->DeclareProperty("radiatorThickness", radiatorThickness, "Thickness of the Cherenkov radiator");
 
     // Inizializza tutti i puntatori a nullptr
@@ -19,10 +21,10 @@ MyDetectorConstruction::MyDetectorConstruction(){
     logicDetector = nullptr;
     logicMirror = nullptr;
 
-    nCols = 10;
-    nRows = 10;
+    nCols = 50;
+    nRows = 50;
 
-    radiatorThickness = 0.5*mm;
+    radiatorThickness = 0.1*mm;
 
     DefineMaterial();
 
@@ -30,7 +32,9 @@ MyDetectorConstruction::MyDetectorConstruction(){
     yWorld = 0.5*m;
     zWorld = 0.5*m;
 
-    isCherenkov = true;
+    isFusedSilica = true;
+    isFusedSilicaProx = false;
+    isCherenkov = false;
     isScintillator = false;
     isTOF = false;   
     isAtmosphere = false;
@@ -49,6 +53,114 @@ void MyDetectorConstruction::ConstructSDandField(){
         logicDetector->SetSensitiveDetector(sensDet);
     }
 }
+
+void MyDetectorConstruction::ConstructFusedSilicaProx(){
+    // IMPORTANTE: Cancella e ricrea il solidRadiator con il nuovo spessore
+    if(solidRadiator != nullptr) {
+        delete solidRadiator;
+    }
+    
+    G4double baseRadius = 5*mm;
+    G4double height = 1.11 * baseRadius;  // full height
+    G4double dz = height / 2.0;           // half-height
+
+    solidRadiatorProx = new G4Cons("solidRadiator",
+                                    0.,          // inner radius at -z (tip)
+                                    baseRadius,          // outer radius at -z (tip)
+                                    0.,          // inner radius at +z (base)
+                                    0.,  // outer radius at +z (base)
+                                    dz,          // half-height
+                                    0.,          // start angle
+                                    360*deg);    // delta angle
+    
+    // Ricrea anche il logicRadiator per applicare le modifiche
+    if(logicRadiator != nullptr) {
+        delete logicRadiator;
+    }
+    
+    logicRadiator = new G4LogicalVolume(solidRadiatorProx, SiO2, "logicRadiator");
+    
+    physRadiator = new G4PVPlacement(0, G4ThreeVector(0,0,0.25*m), logicRadiator, "physRadiator", logicWorld, false, 0, true);
+
+    // Colore (R, G, B, opacità)
+    G4VisAttributes* radiatorVisAtt = new G4VisAttributes(G4Colour(0.0, 0.8, 1.0, 1.0));
+    radiatorVisAtt->SetVisibility(true);
+    radiatorVisAtt->SetForceSolid(true);   // superficie piena, non wireframe
+    logicRadiator->SetVisAttributes(radiatorVisAtt);
+
+    fScoringVolume = logicRadiator;
+
+    if(solidDetector != nullptr){
+        delete solidDetector;
+    }
+
+    G4double arraySize = 1.0*m;  // Area totale da coprire
+    G4double gap = 0.1*mm;
+
+    solidDetector = new G4Box("solidDetector", 
+                          (arraySize/nRows)/2.0 - gap, 
+                          (arraySize/nCols)/2.0 - gap, 
+                          0.01*m);
+
+    if(logicDetector != nullptr){
+        delete logicDetector;
+    }
+
+    logicDetector = new G4LogicalVolume(solidDetector, worldMat, "logicDetector");
+    logicDetector->SetVisAttributes(new G4VisAttributes(G4Colour(1,0,0,0.5)));
+    
+    for(G4int i = 0; i < nRows; i++){
+        for(G4int j = 0; j < nCols; j++){
+            physDetector = new G4PVPlacement(0, 
+                G4ThreeVector(-arraySize/2.0 + (j+0.5)*arraySize/nCols,
+                              -arraySize/2.0 + (i+0.5)*arraySize/nRows,
+                              0.49*m - 0.01*m), 
+                logicDetector, "physDetector", logicWorld, false, j + i*nCols, true);
+        }
+    }
+}
+
+void MyDetectorConstruction::ConstructFusedSilica(){
+    // IMPORTANTE: Cancella e ricrea il solidRadiator con il nuovo spessore
+    if(solidRadiator != nullptr) {
+        delete solidRadiator;
+    }
+    
+    solidRadiator = new G4Box("solidRadiator", 100*mm, 2*mm, radiatorThickness);
+    
+    // Ricrea anche il logicRadiator per applicare le modifiche
+    if(logicRadiator != nullptr) {
+        delete logicRadiator;
+    }
+    
+    logicRadiator = new G4LogicalVolume(solidRadiator, SiO2, "logicRadiator");
+    
+    physRadiator = new G4PVPlacement(0, G4ThreeVector(0,0,0.15*m), logicRadiator, "physRadiator", logicWorld, false, 0, true);
+
+    G4VisAttributes *radiatorVisAtt = new G4VisAttributes(G4Color(0.5, 0.5, 0., 1.));
+    radiatorVisAtt->SetForceWireframe(true);
+    logicRadiator->SetVisAttributes(radiatorVisAtt);
+
+    fScoringVolume = logicRadiator;
+
+    if(solidDetector != nullptr){
+        delete solidDetector;
+    }
+
+    solidDetector = new G4Box("solidDetector", 10*mm, 5*mm, 5*mm);
+
+
+    if(logicDetector != nullptr){
+        delete logicDetector;
+    }
+
+    logicDetector = new G4LogicalVolume(solidDetector, worldMat, "logicDetector");
+    logicDetector->SetVisAttributes(new G4VisAttributes(G4Colour(1,0,0,0.5)));
+    
+    physDetector = new G4PVPlacement(0, G4ThreeVector(105*mm, 0.*m, 0.15*m), logicDetector, "physDetector", logicWorld, false, 0, true);
+    physDetector = new G4PVPlacement(0, G4ThreeVector(-105*mm, 0.*m, 0.15*m), logicDetector, "physDetector", logicWorld, false, 1, true);
+}
+
 
 void MyDetectorConstruction::ConstructCherenkov(){
 
@@ -198,6 +310,17 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct(){
     // Physical volume -> place the logical volume into the physical world [This is mother volume]
     physWorld = new G4PVPlacement(0, G4ThreeVector(0,0,0), logicWorld, "physWorld", 0, false, 0, true);
 
+
+    if(isFusedSilica){
+        ConstructFusedSilica();
+        G4cout << "=== USING FUSED SILICA AS RADIATOR MATERIAL ===" << G4endl;
+    }   
+
+    if(isFusedSilicaProx){
+        ConstructFusedSilicaProx();
+        G4cout << "=== USING FUSED SILICA IN PROXIMITY FOCUS GEOMETRY ===" << G4endl;
+    }   
+
     if(isCherenkov){
         ConstructCherenkov();
         G4cout << "=== CHERENKOV GEOMETRY CONSTRUCTED ===" << G4endl;
@@ -227,6 +350,7 @@ void MyDetectorConstruction::DefineMaterial(){
 
     // Create a volume -> It needs 3 parts (solid, logical(including the material), physical(placement))
     // Create a material -> function takes name, density and components
+    // FUSED SILICA
     SiO2 = new G4Material("SiO2", 2.201*g/cm3, 2);
     SiO2->AddElement(nist->FindOrBuildElement("Si"), 1);
     SiO2->AddElement(nist->FindOrBuildElement("O"), 2);
@@ -257,15 +381,18 @@ void MyDetectorConstruction::DefineMaterial(){
     MgF2->AddElement(Mg, 1);
     MgF2->AddElement(F, 2);
 
-    G4double energy[2] = {1.239841939*eV/0.9, 1.239841939*eV/0.2}; // 0.2um - 0.9um,depends on the wavelength
+    G4int nEntries = 15;
+    G4double energy[nEntries] = {1.239841939*eV/0.9, 1.239841939*eV/0.636, 1.239841939*eV/0.554, 1.239841939*eV/0.517, 1.239841939*eV/0.466, 
+        1.239841939*eV/0.401, 1.239841939*eV/0.378, 1.239841939*eV/0.341, 1.239841939*eV/0.318, 1.239841939*eV/0.287, 1.239841939*eV/0.268, 
+        1.239841939*eV/0.250, 1.239841939*eV/0.233,1.239841939*eV/0.225, 1.239841939*eV/0.21}; // 0.2um - 0.9um,depends on the wavelength
     G4double rindexAerogel[2] = {1.1, 1.1}; // range of refractive index
     G4double rindexAir[2] = {1.0, 1.0}; 
     G4double rindexNaI[2] = {1.78, 1.78}; 
     G4double rindexMgF2[2] = {1.38, 1.42}; 
-    G4double rindexSiO2[2] = {1.47, 1.47}; 
+    G4double rindexSiO2[nEntries] = {1.451324, 1.456926, 1.459756, 1.461445, 1.464436, 1.469529, 1.472705, 1.478468, 1.483150, 1.491821, 1.499000, 1.507610, 1.518042, 1.524079, 1.538358};
     G4double rindexH2O[2] = {1.33, 1.33}; 
-    G4double fraction[2] = {1.0, 1.0};   // Fraction of light emitted in the fast component
-    G4double reflectivity[2] = {0.95, 0.95};   // Fraction of reflected photons
+    G4double fraction[nEntries] = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};   // Fraction of light emitted in the fast component
+    G4double reflectivity[nEntries] = {0.95, 0.95};   // Fraction of reflected photons
 
     G4MaterialPropertiesTable *mptAerogel = new G4MaterialPropertiesTable();
     mptAerogel->AddProperty("RINDEX", energy, rindexAerogel, 2);    
@@ -279,8 +406,8 @@ void MyDetectorConstruction::DefineMaterial(){
     // G4MaterialPropertiesTable *mptMgF2 = new G4MaterialPropertiesTable();
     // mptMgF2->AddProperty("RINDEX", energy, rindexMgF2, 2);
 
-    // G4MaterialPropertiesTable *mptSiO2 = new G4MaterialPropertiesTable();
-    // mptSiO2->AddProperty("RINDEX", energy, rindexSiO2, 2);
+    G4MaterialPropertiesTable *mptSiO2 = new G4MaterialPropertiesTable();
+    mptSiO2->AddProperty("RINDEX", energy, rindexSiO2, nEntries);
 
     // These information you can usually find online
     G4MaterialPropertiesTable *mptNaI = new G4MaterialPropertiesTable();
@@ -294,7 +421,7 @@ void MyDetectorConstruction::DefineMaterial(){
     Aerogel->SetMaterialPropertiesTable(mptAerogel);
     worldMat->SetMaterialPropertiesTable(mptWorld);  
     H2O->SetMaterialPropertiesTable(mptH2O);
-    // SiO2->SetMaterialPropertiesTable(mptSiO2);
+    SiO2->SetMaterialPropertiesTable(mptSiO2);
     // MgF2->SetMaterialPropertiesTable(mptMgF2);
     
     mirrorSurface = new G4OpticalSurface("mirrorSurface");
