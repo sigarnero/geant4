@@ -4,8 +4,13 @@
 #include "G4UserEventAction.hh"
 #include "G4Event.hh"
 #include "G4AnalysisManager.hh"
+#include "G4RunManager.hh"
+#include <vector>
 
 #include "run.hh"
+
+// Forward declaration
+class MySensitiveDetector;
 
 class MyEventAction : public G4UserEventAction{
     public:
@@ -21,11 +26,21 @@ class MyEventAction : public G4UserEventAction{
         G4ThreeVector GetParentMomentum(G4int trackID);
 
         void IncrementCherenkovPhotonCount() { fCherenkovPhotonCount++; }
+        void AddPhoton() { nPhotonsDetected++; }
+
+        // NEW: Methods for coincidence detection
+        void SetSensitiveDetector(MySensitiveDetector* det);
+        void SetCoincidenceWindow(G4double window) { fCoincidenceWindow = window; }
 
     private:
         G4double fEdep;
         std::map<G4int, G4ThreeVector> fParentMomentumMap;
+        G4int nPhotonsDetected;
         G4int fCherenkovPhotonCount;
+        
+        // NEW: For coincidence detection
+        MySensitiveDetector* fSensitiveDetector;
+        G4double fCoincidenceWindow;
 };
 
 #endif

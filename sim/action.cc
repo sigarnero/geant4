@@ -1,4 +1,5 @@
 #include "action.hh"
+#include "detector.hh"  
 
 MyActionInitialization::MyActionInitialization()
 {}

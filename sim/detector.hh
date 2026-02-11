@@ -4,19 +4,31 @@
 #include "G4VSensitiveDetector.hh"
 #include "G4AnalysisManager.hh"
 #include "G4RunManager.hh"
-#include "run.hh"
 #include "G4SystemOfUnits.hh"
-#include <G4PhysicsOrderedFreeVector.hh>
+#include "G4PhysicsOrderedFreeVector.hh"
+#include <fstream>
+#include <vector>
 
-class MySensitiveDetector : public G4VSensitiveDetector{
-    public:
-        MySensitiveDetector(G4String);
-        ~MySensitiveDetector();
+class MySensitiveDetector : public G4VSensitiveDetector
+{
+public:
+    MySensitiveDetector(G4String name);  // Keep your original constructor
+    virtual ~MySensitiveDetector();
+
+    virtual G4bool ProcessHits(G4Step *aStep, G4TouchableHistory *ROHist);
     
-    private:
-        virtual G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+    // NEW: Methods for coincidence detection
+    const std::vector<G4double>& GetDetector1Times() const { return fDetector1Times; }
+    const std::vector<G4double>& GetDetector2Times() const { return fDetector2Times; }
+    void ClearEvent() { 
+        fDetector1Times.clear(); 
+        fDetector2Times.clear();
+    }
 
-        G4PhysicsOrderedFreeVector *quEff;
+private:
+    G4PhysicsOrderedFreeVector *quEff;
+    std::vector<G4double> fDetector1Times;  // NEW: Times for detector at +105mm (copy 0)
+    std::vector<G4double> fDetector2Times;  // NEW: Times for detector at -105mm (copy 1)
 };
 
 #endif

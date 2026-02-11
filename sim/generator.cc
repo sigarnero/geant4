@@ -24,3 +24,18 @@ MyPrimaryGenerator::~MyPrimaryGenerator(){
 void MyPrimaryGenerator::GeneratePrimaries(G4Event *anEvent){    
     fParticleGun->GeneratePrimaryVertex(anEvent);
 }
+
+// MyPrimaryGenerator::MyPrimaryGenerator()
+// {
+//     fGPS = new G4GeneralParticleSource();  // No arguments!
+// }
+
+// MyPrimaryGenerator::~MyPrimaryGenerator()
+// {
+//     delete fGPS;
+// }
+
+// void MyPrimaryGenerator::GeneratePrimaries(G4Event* anEvent)
+// {
+//     fGPS->GeneratePrimaryVertex(anEvent);
+// }

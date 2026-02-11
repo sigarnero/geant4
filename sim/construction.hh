@@ -63,7 +63,7 @@ class MyDetectorConstruction : public G4VUserDetectorConstruction{
         
         G4bool isFusedSilica, isFusedSilicaProx, isCherenkov, isScintillator, isTOF, isAtmosphere, isGasPM;
 
-        G4OpticalSurface *mirrorSurface;
+        G4OpticalSurface *mirrorSurface, *fusedSilicaSurface;
 
         G4LogicalSkinSurface *skin, *skin_1;
 

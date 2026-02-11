@@ -26,7 +26,7 @@ void MySteppingAction::UserSteppingAction(const G4Step *step){
         }
     }
 
-    // Stop optical photon tracking 
+    // Stop opt cal photon tracking 
     if(track->GetDefinition() == G4OpticalPhoton::OpticalPhotonDefinition()){
         return;
     }

@@ -1,4 +1,6 @@
 #include "construction.hh"
+#include "event.hh"
+#include "detector.hh"
 
 MyDetectorConstruction::MyDetectorConstruction(){
     fMessenger = new G4GenericMessenger(this, "/detector/", "Detector construction");
@@ -20,6 +22,10 @@ MyDetectorConstruction::MyDetectorConstruction(){
     logicRadiator = nullptr;
     logicDetector = nullptr;
     logicMirror = nullptr;
+    mirrorSurface = nullptr;           // ADD THIS LINE
+    fusedSilicaSurface = nullptr;      // ADD THIS LINE
+    skin = nullptr;                     // ADD THIS LINE (optional but good practice)
+    skin_1 = nullptr;                   // ADD THIS LINE (optional but good practice)
 
     nCols = 50;
     nRows = 50;
@@ -52,6 +58,14 @@ void MyDetectorConstruction::ConstructSDandField(){
     if(logicDetector != NULL){
         logicDetector->SetSensitiveDetector(sensDet);
     }
+    
+    // NEW: Connect to EventAction for coincidence analysis
+    auto eventAction = (MyEventAction*)G4RunManager::GetRunManager()->GetUserEventAction();
+    if(eventAction) {
+        eventAction->SetSensitiveDetector(sensDet);
+        // Optional: set custom coincidence window (default is 5 ns)
+        // eventAction->SetCoincidenceWindow(10.0*ns);
+    }
 }
 
 void MyDetectorConstruction::ConstructFusedSilicaProx(){
@@ -60,7 +74,7 @@ void MyDetectorConstruction::ConstructFusedSilicaProx(){
         delete solidRadiator;
     }
     
-    G4double baseRadius = 5*mm;
+    G4double baseRadius = 1*mm;
     G4double height = 1.11 * baseRadius;  // full height
     G4double dz = height / 2.0;           // half-height
 
@@ -80,7 +94,7 @@ void MyDetectorConstruction::ConstructFusedSilicaProx(){
     
     logicRadiator = new G4LogicalVolume(solidRadiatorProx, SiO2, "logicRadiator");
     
-    physRadiator = new G4PVPlacement(0, G4ThreeVector(0,0,0.25*m), logicRadiator, "physRadiator", logicWorld, false, 0, true);
+    physRadiator = new G4PVPlacement(0, G4ThreeVector(0,0,0.40*m), logicRadiator, "physRadiator", logicWorld, false, 0, true);
 
     // Colore (R, G, B, opacità)
     G4VisAttributes* radiatorVisAtt = new G4VisAttributes(G4Colour(0.0, 0.8, 1.0, 1.0));
@@ -107,7 +121,7 @@ void MyDetectorConstruction::ConstructFusedSilicaProx(){
     }
 
     logicDetector = new G4LogicalVolume(solidDetector, worldMat, "logicDetector");
-    logicDetector->SetVisAttributes(new G4VisAttributes(G4Colour(1,0,0,0.5)));
+    logicDetector->SetVisAttributes(new G4VisAttributes(G4Colour(1,1,1,0.1)));
     
     for(G4int i = 0; i < nRows; i++){
         for(G4int j = 0; j < nCols; j++){
@@ -393,6 +407,8 @@ void MyDetectorConstruction::DefineMaterial(){
     G4double rindexH2O[2] = {1.33, 1.33}; 
     G4double fraction[nEntries] = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};   // Fraction of light emitted in the fast component
     G4double reflectivity[nEntries] = {0.95, 0.95};   // Fraction of reflected photons
+    G4double absLength[nEntries] = {3900*mm, 3900*mm, 3900*mm, 3900*mm, 3900*mm, 3900*mm, 3900*mm, 3900*mm, 3900*mm, 3900*mm, 3900*mm, 3900*mm, 3900*mm, 3900*mm, 3900*mm};;
+    // G4double absLength = 3900*mm;
 
     G4MaterialPropertiesTable *mptAerogel = new G4MaterialPropertiesTable();
     mptAerogel->AddProperty("RINDEX", energy, rindexAerogel, 2);    
@@ -406,9 +422,6 @@ void MyDetectorConstruction::DefineMaterial(){
     // G4MaterialPropertiesTable *mptMgF2 = new G4MaterialPropertiesTable();
     // mptMgF2->AddProperty("RINDEX", energy, rindexMgF2, 2);
 
-    G4MaterialPropertiesTable *mptSiO2 = new G4MaterialPropertiesTable();
-    mptSiO2->AddProperty("RINDEX", energy, rindexSiO2, nEntries);
-
     // These information you can usually find online
     G4MaterialPropertiesTable *mptNaI = new G4MaterialPropertiesTable();
     mptNaI->AddProperty("RINDEX", energy, rindexNaI, 2);
@@ -421,7 +434,6 @@ void MyDetectorConstruction::DefineMaterial(){
     Aerogel->SetMaterialPropertiesTable(mptAerogel);
     worldMat->SetMaterialPropertiesTable(mptWorld);  
     H2O->SetMaterialPropertiesTable(mptH2O);
-    SiO2->SetMaterialPropertiesTable(mptSiO2);
     // MgF2->SetMaterialPropertiesTable(mptMgF2);
     
     mirrorSurface = new G4OpticalSurface("mirrorSurface");
@@ -429,6 +441,18 @@ void MyDetectorConstruction::DefineMaterial(){
     mirrorSurface->SetType(dielectric_metal);
     mirrorSurface->SetFinish(polished);
     mirrorSurface->SetModel(unified);
+
+    fusedSilicaSurface = new G4OpticalSurface("fusedSilicaSurface");
+    fusedSilicaSurface->SetType(dielectric_dielectric);
+    fusedSilicaSurface->SetFinish(polished);
+    fusedSilicaSurface->SetModel(unified);
+
+    G4MaterialPropertiesTable *mptSiO2 = new G4MaterialPropertiesTable();
+    mptSiO2->AddProperty("RINDEX", energy, rindexSiO2, nEntries);
+    mptSiO2->AddProperty("ABSLENGTH", energy, absLength, nEntries);
+    fusedSilicaSurface->SetMaterialPropertiesTable(mptSiO2);
+
+    SiO2->SetMaterialPropertiesTable(mptSiO2);
 
     G4MaterialPropertiesTable *mptMirror = new G4MaterialPropertiesTable();
     mptMirror->AddProperty("REFLECTIVITY", energy, reflectivity, 2);

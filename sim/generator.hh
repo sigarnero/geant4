@@ -3,6 +3,7 @@
 
 #include "G4VUserPrimaryGeneratorAction.hh"
 
+#include "G4GeneralParticleSource.hh"
 #include "G4ParticleGun.hh"
 #include "G4Event.hh"
 #include "G4ParticleTable.hh"
@@ -19,6 +20,7 @@ class MyPrimaryGenerator : public G4VUserPrimaryGeneratorAction{
         
     private:
         G4ParticleGun *fParticleGun;
+        // G4GeneralParticleSource *fGPS;
         G4String particleName;
         G4ParticleDefinition *particle;
 };

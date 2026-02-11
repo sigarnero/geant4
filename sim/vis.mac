@@ -1,3 +1,6 @@
+############################
+# --- VISUALISATION SETUP ---
+############################
 /vis/open OGL
 /vis/viewer/set/viewpointVector 1 1 1
 /vis/drawVolume
@@ -7,3 +10,24 @@
 /vis/scene/add/axes
 /vis/scene/add/eventID
 /vis/scene/endOfEventAction accumulate
+
+############################
+# --- GPS PARTICLE SOURCE ---
+############################
+
+/gps/particle proton
+/gps/energy 8 GeV
+
+# Start position
+/gps/pos/type Point
+/gps/pos/centre 0 0 0 mm   # start upstream, safer than 0 0 0
+/gps/pos/shape Circle
+/gps/pos/radius 10 mm
+/gps/pos/sigma_x 6 mm
+/gps/pos/sigma_y 6 mm
+
+# Beam direction
+/gps/direction 0 0 1
+
+# One particle per event
+/gps/number 1
