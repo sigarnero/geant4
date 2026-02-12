@@ -30,7 +30,7 @@ MyDetectorConstruction::MyDetectorConstruction(){
     nCols = 50;
     nRows = 50;
 
-    radiatorThickness = 0.1*mm;
+    radiatorThickness = 1.0*mm;
 
     DefineMaterial();
 
@@ -140,7 +140,7 @@ void MyDetectorConstruction::ConstructFusedSilica(){
         delete solidRadiator;
     }
     
-    solidRadiator = new G4Box("solidRadiator", 100*mm, 2*mm, radiatorThickness);
+    solidRadiator = new G4Box("solidRadiator", 100*mm, 12.5*mm, radiatorThickness);
     
     // Ricrea anche il logicRadiator per applicare le modifiche
     if(logicRadiator != nullptr) {
@@ -150,6 +150,8 @@ void MyDetectorConstruction::ConstructFusedSilica(){
     logicRadiator = new G4LogicalVolume(solidRadiator, SiO2, "logicRadiator");
     
     physRadiator = new G4PVPlacement(0, G4ThreeVector(0,0,0.15*m), logicRadiator, "physRadiator", logicWorld, false, 0, true);
+
+    G4LogicalSkinSurface *radiatorSkin = new G4LogicalSkinSurface("radiatorSkin", logicRadiator, fusedSilicaSurface);
 
     G4VisAttributes *radiatorVisAtt = new G4VisAttributes(G4Color(0.5, 0.5, 0., 1.));
     radiatorVisAtt->SetForceWireframe(true);
@@ -161,8 +163,7 @@ void MyDetectorConstruction::ConstructFusedSilica(){
         delete solidDetector;
     }
 
-    solidDetector = new G4Box("solidDetector", 10*mm, 5*mm, 5*mm);
-
+    solidDetector = new G4Box("solidDetector", 10*mm, 12.5*mm, 5*mm);
 
     if(logicDetector != nullptr){
         delete logicDetector;
@@ -439,13 +440,14 @@ void MyDetectorConstruction::DefineMaterial(){
     mirrorSurface = new G4OpticalSurface("mirrorSurface");
     // Just default staff but important for the reflective skin
     mirrorSurface->SetType(dielectric_metal);
-    mirrorSurface->SetFinish(polished);
     mirrorSurface->SetModel(unified);
+    mirrorSurface->SetFinish(polished);
 
     fusedSilicaSurface = new G4OpticalSurface("fusedSilicaSurface");
     fusedSilicaSurface->SetType(dielectric_dielectric);
-    fusedSilicaSurface->SetFinish(polished);
     fusedSilicaSurface->SetModel(unified);
+    fusedSilicaSurface->SetFinish(polished);  // rough surface to allow for diffuse reflection
+    fusedSilicaSurface->SetSigmaAlpha(0.1);  // Adjust this value to control the roughness (0 = perfectly smooth, higher values = rougher)
 
     G4MaterialPropertiesTable *mptSiO2 = new G4MaterialPropertiesTable();
     mptSiO2->AddProperty("RINDEX", energy, rindexSiO2, nEntries);

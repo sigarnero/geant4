@@ -6,10 +6,13 @@
 #include "G4GeneralParticleSource.hh"
 #include "G4ParticleGun.hh"
 #include "G4Event.hh"
+#include "run.hh"
+#include "G4RunManager.hh"
 #include "G4ParticleTable.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4IonTable.hh"
 #include "G4Geantino.hh"
+#include "Randomize.hh"
 
 class MyPrimaryGenerator : public G4VUserPrimaryGeneratorAction{
     public:

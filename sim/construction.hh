@@ -65,7 +65,7 @@ class MyDetectorConstruction : public G4VUserDetectorConstruction{
 
         G4OpticalSurface *mirrorSurface, *fusedSilicaSurface;
 
-        G4LogicalSkinSurface *skin, *skin_1;
+        G4LogicalSkinSurface *skin, *skin_1, *radiatorSkin;
 
         G4double radiatorThickness;
 

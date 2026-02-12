@@ -28,7 +28,7 @@ class MyEventAction : public G4UserEventAction{
         void IncrementCherenkovPhotonCount() { fCherenkovPhotonCount++; }
         void AddPhoton() { nPhotonsDetected++; }
 
-        // NEW: Methods for coincidence detection
+        // Methods for coincidence detection
         void SetSensitiveDetector(MySensitiveDetector* det);
         void SetCoincidenceWindow(G4double window) { fCoincidenceWindow = window; }
 
@@ -38,7 +38,7 @@ class MyEventAction : public G4UserEventAction{
         G4int nPhotonsDetected;
         G4int fCherenkovPhotonCount;
         
-        // NEW: For coincidence detection
+        // For coincidence detection
         MySensitiveDetector* fSensitiveDetector;
         G4double fCoincidenceWindow;
 };

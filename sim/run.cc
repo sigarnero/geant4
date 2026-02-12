@@ -6,10 +6,9 @@ MyRunAction::MyRunAction(){
 
     man->CreateH1("Edep", "Energy deposited", 100, 0., 1.1*GeV);
 
-    // Ntuple 0: MODIFIED - added detector ID column
     man->CreateNtuple("Photons", "Photons");
     man->CreateNtupleIColumn("fEvent");
-    man->CreateNtupleIColumn("fDetectorID");  // NEW
+    man->CreateNtupleIColumn("fDetectorID");  
     man->CreateNtupleDColumn("fX");
     man->CreateNtupleDColumn("fY");
     man->CreateNtupleDColumn("fZ");
@@ -17,10 +16,9 @@ MyRunAction::MyRunAction(){
     man->CreateNtupleDColumn("fTime");
     man->FinishNtuple(0); 
 
-    // Ntuple 1: MODIFIED - added detector ID column
     man->CreateNtuple("Hits", "Hits");
     man->CreateNtupleIColumn("fEvent");
-    man->CreateNtupleIColumn("fDetectorID");  // NEW
+    man->CreateNtupleIColumn("fDetectorID");  
     man->CreateNtupleDColumn("fX");
     man->CreateNtupleDColumn("fY");
     man->CreateNtupleDColumn("fZ");
@@ -28,39 +26,36 @@ MyRunAction::MyRunAction(){
     man->CreateNtupleDColumn("fTime");
     man->FinishNtuple(1);
 
-    // Ntuple 2: UNCHANGED
     man->CreateNtuple("Scoring", "Scoring");
     man->CreateNtupleDColumn("fEdep");
     man->FinishNtuple(2);  
     
-    // Ntuple 3: UNCHANGED
     man->CreateNtuple("Cherenkov", "Cherenkov photons");
     man->CreateNtupleDColumn("thetaC_rad");
     man->CreateNtupleDColumn("thetaC_deg");
     man->FinishNtuple(3);
 
-    // Ntuple 4: UNCHANGED
     man->CreateNtuple("PhotonCount", "Cherenkov Photons per Event");
     man->CreateNtupleIColumn("nPhotons");
     man->FinishNtuple(4);
 
     man->CreateH1("CherenkovAngle", "Cherenkov Angle Distribution", 100, 0., 50.0);
 
-    // Ntuple 5: Detector 1 time distribution
+    // Detector 1 time distribution
     man->CreateNtuple("Detector1Times", "Detector 1 Time Distribution");
     man->CreateNtupleIColumn("fEvent");
     man->CreateNtupleIColumn("fDetectorID");
     man->CreateNtupleDColumn("fTime");
     man->FinishNtuple(5);
 
-    // Ntuple 6: Detector 2 time distribution
+    // Detector 2 time distribution
     man->CreateNtuple("Detector2Times", "Detector 2 Time Distribution");
     man->CreateNtupleIColumn("fEvent");
     man->CreateNtupleIColumn("fDetectorID");
     man->CreateNtupleDColumn("fTime");
     man->FinishNtuple(6);
 
-    // Ntuple 7: Coincidences
+    // Coincidences
     man->CreateNtuple("Coincidences", "Coincidence Events");
     man->CreateNtupleIColumn("fEvent");
     man->CreateNtupleDColumn("fTime1");
@@ -69,7 +64,7 @@ MyRunAction::MyRunAction(){
     man->CreateNtupleDColumn("fTimeAvg");
     man->FinishNtuple(7);
 
-    // Ntuple 8: Event summary
+    // Event summary
     man->CreateNtuple("EventSummary", "Event Summary");
     man->CreateNtupleIColumn("fEvent");
     man->CreateNtupleIColumn("fNDet1");
@@ -77,14 +72,24 @@ MyRunAction::MyRunAction(){
     man->CreateNtupleIColumn("fNCoincidences");
     man->FinishNtuple(8);
 
-    // Ntuple 9: Photon reflection and path statistics
+    // Photon reflection and path statistics
     man->CreateNtuple("PhotonReflections", "Photon Reflections and Path");
     man->CreateNtupleIColumn("fEvent");
     man->CreateNtupleIColumn("fTrackID");
     man->CreateNtupleIColumn("fNReflections");
     man->CreateNtupleDColumn("fPathLength");      // in mm
     man->CreateNtupleIColumn("fDetectorID");      // 0=not detected, 1=det1, 2=det2
+    man->CreateNtupleDColumn("fWavelength");      // wavelength in nm
+    man->CreateNtupleIColumn("fReachedEnd");      // 1 if reached end, 0 if lost
     man->FinishNtuple(9);
+
+    // Beam profile verification
+    man->CreateNtuple("BeamProfile", "Initial Proton Positions");
+    man->CreateNtupleIColumn("fEvent");
+    man->CreateNtupleDColumn("fX0");  // Initial x position
+    man->CreateNtupleDColumn("fY0");  // Initial y position
+    man->CreateNtupleDColumn("fZ0");  // Initial z position
+    man->FinishNtuple(10);
 }
 
 MyRunAction::~MyRunAction(){}

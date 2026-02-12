@@ -18,7 +18,6 @@ void MySteppingAction::UserSteppingAction(const G4Step *step){
             if(secondary->GetDefinition() == G4OpticalPhoton::OpticalPhotonDefinition()){
                 const G4VProcess* creator = secondary->GetCreatorProcess();
                 if(creator && creator->GetProcessName() == "Cerenkov"){
-                    // Store the parent's momentum direction
                     G4ThreeVector parentMomentum = track->GetMomentumDirection();
                     fEventAction->StoreParentMomentum(secondary->GetTrackID(), parentMomentum);
                     
@@ -38,7 +37,7 @@ void MySteppingAction::UserSteppingAction(const G4Step *step){
         G4double stepLength = step->GetStepLength();
         fPhotonPathLength[trackID] += stepLength;
         
-        // NEW: Detect reflection by checking if direction changed at a boundary
+        // Detect reflection by checking if direction changed at a boundary
         G4StepPoint* preStepPoint = step->GetPreStepPoint();
         G4StepPoint* postStepPoint = step->GetPostStepPoint();
         
@@ -46,7 +45,7 @@ void MySteppingAction::UserSteppingAction(const G4Step *step){
         G4VPhysicalVolume* preVolume = preStepPoint->GetPhysicalVolume();
         G4VPhysicalVolume* postVolume = postStepPoint->GetPhysicalVolume();
         
-        // Check if we're at a boundary (different volumes or world boundary)
+        // Check if we're at a boundary
         G4bool atBoundary = false;
         if(postVolume == nullptr || preVolume != postVolume) {
             atBoundary = true;
@@ -57,21 +56,10 @@ void MySteppingAction::UserSteppingAction(const G4Step *step){
             G4ThreeVector preDirection = preStepPoint->GetMomentumDirection();
             G4ThreeVector postDirection = postStepPoint->GetMomentumDirection();
             
-            // Calculate angle between directions
             G4double angle = preDirection.angle(postDirection);
             
-            // If direction changed significantly (> 0.1 radians ≈ 5.7 degrees), count as reflection
             if(angle > 0.1) {
                 fPhotonReflectionCount[trackID]++;
-                
-                // DEBUG
-                G4String processName = "Unknown";
-                const G4VProcess* process = postStepPoint->GetProcessDefinedStep();
-                if(process) processName = process->GetProcessName();
-                
-                // G4cout << "Track " << trackID << " reflected! Process: " << processName 
-                //        << " Angle change: " << angle*180/3.14159 << " deg"
-                //        << " Total reflections: " << fPhotonReflectionCount[trackID] << G4endl;
             }
         }
         
@@ -82,14 +70,20 @@ void MySteppingAction::UserSteppingAction(const G4Step *step){
             
             G4int evt = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
             
+            // NEW: Get wavelength
+            G4ThreeVector momentum = track->GetMomentum();
+            G4double wavelength = (1.239841939*eV/momentum.mag())*1E+03; // in nm
+            
             // Get detector info
             const G4VTouchable* touchable = preStepPoint->GetTouchable();
             G4int copyNumber = -1;
+            G4int reachedEnd = 0;  // NEW: flag for reaching detector
             
             if(touchable->GetVolume()){
                 G4String volumeName = touchable->GetVolume()->GetName();
                 if(volumeName == "physDetector"){
                     copyNumber = touchable->GetCopyNumber();
+                    reachedEnd = 1;  // NEW: photon reached the end!
                 }
             }
             
@@ -100,7 +94,9 @@ void MySteppingAction::UserSteppingAction(const G4Step *step){
             man->FillNtupleIColumn(9, 1, trackID);
             man->FillNtupleIColumn(9, 2, nReflections);
             man->FillNtupleDColumn(9, 3, pathLength/mm);
-            man->FillNtupleIColumn(9, 4, copyNumber + 1);
+            man->FillNtupleIColumn(9, 4, copyNumber + 1);  // 0=lost, 1=det1, 2=det2
+            man->FillNtupleDColumn(9, 5, wavelength);       // NEW
+            man->FillNtupleIColumn(9, 6, reachedEnd);       // NEW
             man->AddNtupleRow(9);
             
             // Clean up
@@ -111,8 +107,7 @@ void MySteppingAction::UserSteppingAction(const G4Step *step){
         return;
     }
 
-
-    // Energy deposition for charged particles (existing code)
+    // Energy deposition for charged particles
     G4LogicalVolume *volume = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume();
     const MyDetectorConstruction *detectorConstruction = 
         static_cast<const MyDetectorConstruction*> (G4RunManager::GetRunManager()->GetUserDetectorConstruction());

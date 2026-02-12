@@ -54,7 +54,7 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROHis
 
     G4AnalysisManager *man = G4AnalysisManager::Instance();
 
-    // Ntuple 0: All photons - MODIFIED to include detector ID
+    // Ntuple 0: All photons reaching the detector (before efficiency cut) 
     man->FillNtupleIColumn(0, 0, evt);
     man->FillNtupleIColumn(0, 1, detectorID);  // NEW COLUMN
     man->FillNtupleDColumn(0, 2, posPhoton[0]);
@@ -65,7 +65,7 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROHis
     man->AddNtupleRow(0);
 
     if(G4UniformRand() < quEff->Value(wlen)){   
-        // Ntuple 1: Detected photons - MODIFIED to include detector ID
+        // Ntuple 1: Detected photons 
         man->FillNtupleIColumn(1, 0, evt);
         man->FillNtupleIColumn(1, 1, detectorID);  // NEW COLUMN
         man->FillNtupleDColumn(1, 2, posDetector[0]);
