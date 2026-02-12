@@ -46,8 +46,6 @@ MyRunAction::MyRunAction(){
 
     man->CreateH1("CherenkovAngle", "Cherenkov Angle Distribution", 100, 0., 50.0);
 
-    // NEW Ntuples for coincidence detection start at index 5
-
     // Ntuple 5: Detector 1 time distribution
     man->CreateNtuple("Detector1Times", "Detector 1 Time Distribution");
     man->CreateNtupleIColumn("fEvent");
@@ -78,6 +76,15 @@ MyRunAction::MyRunAction(){
     man->CreateNtupleIColumn("fNDet2");
     man->CreateNtupleIColumn("fNCoincidences");
     man->FinishNtuple(8);
+
+    // Ntuple 9: Photon reflection and path statistics
+    man->CreateNtuple("PhotonReflections", "Photon Reflections and Path");
+    man->CreateNtupleIColumn("fEvent");
+    man->CreateNtupleIColumn("fTrackID");
+    man->CreateNtupleIColumn("fNReflections");
+    man->CreateNtupleDColumn("fPathLength");      // in mm
+    man->CreateNtupleIColumn("fDetectorID");      // 0=not detected, 1=det1, 2=det2
+    man->FinishNtuple(9);
 }
 
 MyRunAction::~MyRunAction(){}
