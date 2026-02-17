@@ -52,7 +52,7 @@ void MyEventAction::EndOfEventAction(const G4Event* event)
     man->FillNtupleIColumn(4, 0, fCherenkovPhotonCount);
     man->AddNtupleRow(4);
 
-    // NEW: Coincidence analysis
+    // Coincidence analysis
     if(fSensitiveDetector) {
         const std::vector<G4double>& times1 = fSensitiveDetector->GetDetector1Times();
         const std::vector<G4double>& times2 = fSensitiveDetector->GetDetector2Times();

@@ -30,7 +30,7 @@ MyDetectorConstruction::MyDetectorConstruction(){
     nCols = 50;
     nRows = 50;
 
-    radiatorThickness = 1.0*mm;
+    radiatorThickness = 10.0*mm;
 
     DefineMaterial();
 
@@ -140,6 +140,7 @@ void MyDetectorConstruction::ConstructFusedSilica(){
         delete solidRadiator;
     }
     
+    // solidRadiatorSilica = new G4Tubs("solidRadiatorSilica", 0*cm, 12.5*mm, 10*cm, 0.*deg, 360.*deg);
     solidRadiator = new G4Box("solidRadiator", 100*mm, 12.5*mm, radiatorThickness);
     
     // Ricrea anche il logicRadiator per applicare le modifiche
@@ -148,7 +149,9 @@ void MyDetectorConstruction::ConstructFusedSilica(){
     }
     
     logicRadiator = new G4LogicalVolume(solidRadiator, SiO2, "logicRadiator");
-    
+
+    G4RotationMatrix* rot = new G4RotationMatrix();
+    // rot->rotateY(90 * deg);
     physRadiator = new G4PVPlacement(0, G4ThreeVector(0,0,0.15*m), logicRadiator, "physRadiator", logicWorld, false, 0, true);
 
     G4LogicalSkinSurface *radiatorSkin = new G4LogicalSkinSurface("radiatorSkin", logicRadiator, fusedSilicaSurface);
@@ -163,7 +166,7 @@ void MyDetectorConstruction::ConstructFusedSilica(){
         delete solidDetector;
     }
 
-    solidDetector = new G4Box("solidDetector", 10*mm, 12.5*mm, 5*mm);
+    solidDetector = new G4Box("solidDetector", 10*mm, 12.5*mm, 10*mm);
 
     if(logicDetector != nullptr){
         delete logicDetector;
