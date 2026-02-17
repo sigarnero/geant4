@@ -11,6 +11,29 @@ void MySteppingAction::UserSteppingAction(const G4Step *step){
 
     const G4Track* track = step->GetTrack();
 
+    // ---- Hadronic Inelastic (Bertini) interaction tracking ----
+    // Check the post-step process for hadronic inelastic interactions
+    const G4VProcess* postProcess = step->GetPostStepPoint()->GetProcessDefinedStep();
+    if(postProcess) {
+        G4String procName = postProcess->GetProcessName();
+        if(procName.find("Inelastic") != std::string::npos) {
+            fEventAction->IncrementBertiniCount();
+            fEventAction->SetHadronicInteraction(); 
+            // Record only secondaries produced by the hadronic process itself
+            // (exclude Cerenkov optical photons that may be created in the same step)
+            const std::vector<const G4Track*>* secs = step->GetSecondaryInCurrentStep();
+            if(secs) {
+                for(const G4Track* sec : *secs) {
+                    const G4VProcess* creator = sec->GetCreatorProcess();
+                    if(creator && creator->GetProcessName().find("Inelastic") != std::string::npos) {
+                        fEventAction->AddBertiniSecondary(sec->GetDefinition()->GetPDGEncoding());
+                    }
+                }
+            }
+        }
+    }
+
+
     // Store parent momentum for Cherenkov photons created in this step
     const std::vector<const G4Track*>* secondaries = step->GetSecondaryInCurrentStep();
     if(secondaries){

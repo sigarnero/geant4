@@ -7,6 +7,7 @@ MyEventAction::MyEventAction(MyRunAction*)
     fEdep = 0.;
     fSensitiveDetector = nullptr;
     fCoincidenceWindow = 5.0*ns;  // Default 5 ns coincidence window
+    fHadronicInteraction = false; 
 }
 
 MyEventAction::~MyEventAction()
@@ -28,6 +29,9 @@ void MyEventAction::BeginOfEventAction(const G4Event*)
     fCherenkovPhotonCount = 0;
     nPhotonsDetected = 0;
     fParentMomentumMap.clear();
+    fBertiniCount = 0;
+    fBertiniSecondaries.clear();
+    fHadronicInteraction = false; 
     
     // Clear detector times
     if(fSensitiveDetector) {
@@ -73,7 +77,7 @@ void MyEventAction::EndOfEventAction(const G4Event* event)
             man->AddNtupleRow(6);
         }
 
-        // Ntuple 7: Coincidence events
+        // Coincidence events
         G4int nCoincidences = 0;
         for(auto t1 : times1) {
             for(auto t2 : times2) {
@@ -91,13 +95,30 @@ void MyEventAction::EndOfEventAction(const G4Event* event)
             }
         }
 
-        // Ntuple 8: Event summary
+        // Event summary
         man->FillNtupleIColumn(8, 0, evt);
         man->FillNtupleIColumn(8, 1, times1.size());
         man->FillNtupleIColumn(8, 2, times2.size());
         man->FillNtupleIColumn(8, 3, nCoincidences);
         man->AddNtupleRow(8);
     }
+
+    // Hadronic (Bertini) interaction data
+    // One row per secondary particle produced in hadronic inelastic interactions
+    if(fBertiniSecondaries.size() > 0) {
+        for(G4int pdg : fBertiniSecondaries) {
+            man->FillNtupleIColumn(11, 0, evt);
+            man->FillNtupleIColumn(11, 1, fBertiniCount);
+            man->FillNtupleIColumn(11, 2, pdg);
+            man->AddNtupleRow(11);
+        }
+    }
+
+    // Hadronic event summary
+    man->FillNtupleIColumn(12, 0, evt);
+    man->FillNtupleIColumn(12, 1, fHadronicInteraction ? 1 : 0);
+    man->FillNtupleIColumn(12, 2, fBertiniCount);
+    man->AddNtupleRow(12);
 }
 
 void MyEventAction::StoreParentMomentum(G4int trackID, G4ThreeVector momentum)

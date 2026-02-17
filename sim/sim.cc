@@ -7,7 +7,7 @@
 #include "G4VisExecutive.hh"
 #include "G4HadronicParameters.hh"
 #include "QGSP_BERT.hh"
-
+#include <ctime>
 #include "construction.hh"
 #include "physics.hh"
 #include "action.hh"
@@ -27,6 +27,9 @@ int main(int argc, char** argv) {
         G4RunManager *runManager = new G4RunManager();
     #endif
     
+    // Set random seed from system time for independent runs
+    CLHEP::HepRandom::setTheSeed(time(nullptr));
+
     runManager->SetUserInitialization(new MyDetectorConstruction());
     runManager->SetUserInitialization(new MyPhysicsList());
     runManager->SetUserInitialization(new MyActionInitialization());

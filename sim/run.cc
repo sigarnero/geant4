@@ -90,6 +90,20 @@ MyRunAction::MyRunAction(){
     man->CreateNtupleDColumn("fY0");  // Initial y position
     man->CreateNtupleDColumn("fZ0");  // Initial z position
     man->FinishNtuple(10);
+
+    // Hadronic (Bertini) interactions
+    man->CreateNtuple("Bertini", "Hadronic Inelastic Interactions");
+    man->CreateNtupleIColumn("fEvent");
+    man->CreateNtupleIColumn("fNInteractions");  // total inelastic interactions this event
+    man->CreateNtupleIColumn("fPDG");             // PDG code of secondary particle
+    man->FinishNtuple(11);
+
+    // Hdronic event summary
+    man->CreateNtuple("HadronicEventSummary", "Hadronic Event Summary");
+    man->CreateNtupleIColumn("fEvent");
+    man->CreateNtupleIColumn("fHadronicFlag");   // 1 if hadronic happened, 0 if not
+    man->CreateNtupleIColumn("fNInteractions");  // number of hadronic interactions
+    man->FinishNtuple(12);
 }
 
 MyRunAction::~MyRunAction(){}

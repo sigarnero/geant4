@@ -12,22 +12,9 @@
 /vis/scene/endOfEventAction accumulate
 
 ############################
-# --- GPS PARTICLE SOURCE ---
+# --- PARTICLE GUN ---
 ############################
-
-/gps/particle proton
-/gps/energy 8 GeV
-
-# Start position
-/gps/pos/type Point
-/gps/pos/centre 0 0 0 mm   # start upstream, safer than 0 0 0
-/gps/pos/shape Circle
-/gps/pos/radius 10 mm
-/gps/pos/sigma_x 6 mm
-/gps/pos/sigma_y 6 mm
-
-# Beam direction
-/gps/direction 0 0 1
-
-# One particle per event
-/gps/number 1
+/gun/particle proton
+/gun/momentumAmp 8 GeV
+/gun/position 0 0 0 m
+/gun/direction 0 0 1
