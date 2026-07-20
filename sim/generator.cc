@@ -13,9 +13,25 @@ MyPrimaryGenerator::MyPrimaryGenerator(){
 
     // fParticleGun->SetParticlePosition(pos);
     fParticleGun->SetParticleMomentumDirection(mom);
-    fParticleGun->SetParticleMomentum(5. * GeV);
+    fParticleGun->SetParticleMomentum(8. * GeV);
     fParticleGun->SetParticleDefinition(particle);
 }
+
+
+// When irradiating photons
+// MyPrimaryGenerator::MyPrimaryGenerator(){
+//     fParticleGun = new G4ParticleGun(1);
+
+//     G4ParticleTable *particleTable = G4ParticleTable::GetParticleTable();
+//     particleName = "opticalphoton";   // <-- importante, vedi nota sotto
+//     particle = particleTable->FindParticle(particleName);
+
+//     G4ThreeVector mom(0., 0., 1.);
+
+//     fParticleGun->SetParticleMomentumDirection(mom);
+//     fParticleGun->SetParticleEnergy(3.0996 * eV);   // <-- non SetParticleMomentum (questo per protoni)
+//     fParticleGun->SetParticleDefinition(particle);
+// }
 
 MyPrimaryGenerator::~MyPrimaryGenerator(){
     delete fParticleGun;
@@ -29,7 +45,8 @@ void MyPrimaryGenerator::GeneratePrimaries(G4Event *anEvent){
     G4double y = G4RandGauss::shoot(0.0, sigma);  // Mean = 0, sigma = 6 mm
     G4double z = -0.5*m;  // Starting position in z (adjust as needed)
     
-    G4ThreeVector position(x, y, z);
+    // G4ThreeVector position(x, y, z);
+    G4ThreeVector position(0, 0, z);
     fParticleGun->SetParticlePosition(position);
 
     G4AnalysisManager *man = G4AnalysisManager::Instance();
@@ -42,6 +59,49 @@ void MyPrimaryGenerator::GeneratePrimaries(G4Event *anEvent){
     // Generate the primary vertex
     fParticleGun->GeneratePrimaryVertex(anEvent);
 }
+
+// void MyPrimaryGenerator::GeneratePrimaries(G4Event *anEvent){
+//     // Geometria della barra (deve coincidere con construction.cc!)
+//     const G4double barRadius  = 5.0*mm;
+//     const G4double barHalfLen = 100.0*mm;
+//     const G4double barCenterZ = 0.2*m;
+//     const G4double z = barCenterZ - barHalfLen;   // faccia d'ingresso, LED a contatto
+
+//     // --- Posizione: uniforme sul disco della faccia d'ingresso ---
+//     G4double r   = barRadius * std::sqrt(G4UniformRand());
+//     G4double phi = 2.*CLHEP::pi*G4UniformRand();
+//     G4double x = r*std::cos(phi);
+//     G4double y = r*std::sin(phi);
+//     G4ThreeVector position(x, y, z);
+//     fParticleGun->SetParticlePosition(position);
+
+//     // --- Direzione: cono di semiapertura 15° attorno a +z ---
+//     G4double halfAngle   = 15.0*deg;
+//     G4double cosThetaMax = std::cos(halfAngle);
+//     G4double u = G4UniformRand();
+
+//     // OPZIONE A - uniforme in angolo solido:
+//     // G4double cosTheta = 1.0 - u*(1.0 - cosThetaMax);
+
+//     // OPZIONE B - Lambertiana troncata (default consigliato):
+//     G4double cosTheta = std::sqrt(cosThetaMax*cosThetaMax + u*(1.0 - cosThetaMax*cosThetaMax));
+
+//     G4double sinTheta = std::sqrt(1.0 - cosTheta*cosTheta);
+//     G4double phiDir = 2.*CLHEP::pi*G4UniformRand();
+
+//     G4ThreeVector direction(sinTheta*std::cos(phiDir), sinTheta*std::sin(phiDir), cosTheta);
+//     fParticleGun->SetParticleMomentumDirection(direction);
+
+//     // ntuple 10: ora x,y sono coerenti con la posizione realmente usata
+//     G4AnalysisManager *man = G4AnalysisManager::Instance();
+//     man->FillNtupleIColumn(10, 0, anEvent->GetEventID());
+//     man->FillNtupleDColumn(10, 1, x/mm);
+//     man->FillNtupleDColumn(10, 2, y/mm);
+//     man->FillNtupleDColumn(10, 3, z/mm);
+//     man->AddNtupleRow(10);
+
+//     fParticleGun->GeneratePrimaryVertex(anEvent);
+// }
 
 // MyPrimaryGenerator::MyPrimaryGenerator()
 // {

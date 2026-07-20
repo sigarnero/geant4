@@ -1,52 +1,62 @@
 [
 {
-  "directory": "/home/simo-garne/geant4/code/sim/build2",
-  "command": "/usr/bin/c++ -DG4LIB_BUILD_DLL -DG4UI_USE_QT -DG4VIS_USE_OPENGLQT -DG4VIS_USE_RAYTRACERX -DG4VIS_USE_TOOLSSG_QT_GLES -DG4VIS_USE_TOOLSSG_QT_ZB -DPTL_BUILD_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -isystem /home/simo-garne/geant4/geant4-v11.3.2-mt-install/include/Geant4 -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -fPIC -o CMakeFiles/sim.dir/sim.cc.o -c /home/simo-garne/geant4/code/sim/sim.cc",
-  "file": "/home/simo-garne/geant4/code/sim/sim.cc"
+  "directory": "/home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/build2",
+  "command": "/usr/bin/c++ -DG4LIB_BUILD_DLL -DG4UI_USE_QT -DG4VIS_USE_OPENGLQT -DG4VIS_USE_RAYTRACERX -DG4VIS_USE_RAYTRACER_QT -DG4VIS_USE_TOOLSSG_QT_GLES -DG4VIS_USE_TOOLSSG_QT_ZB -DPTL_BUILD_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -isystem /home/sgarnero/Geant4/geant4-v11.4.1/include/Geant4 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -fPIC -o CMakeFiles/sim.dir/sim.cc.o -c /home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/sim.cc",
+  "file": "/home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/sim.cc",
+  "output": "CMakeFiles/sim.dir/sim.cc.o"
 },
 {
-  "directory": "/home/simo-garne/geant4/code/sim/build2",
-  "command": "/usr/bin/c++ -DG4LIB_BUILD_DLL -DG4UI_USE_QT -DG4VIS_USE_OPENGLQT -DG4VIS_USE_RAYTRACERX -DG4VIS_USE_TOOLSSG_QT_GLES -DG4VIS_USE_TOOLSSG_QT_ZB -DPTL_BUILD_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -isystem /home/simo-garne/geant4/geant4-v11.3.2-mt-install/include/Geant4 -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -fPIC -o CMakeFiles/sim.dir/action.cc.o -c /home/simo-garne/geant4/code/sim/action.cc",
-  "file": "/home/simo-garne/geant4/code/sim/action.cc"
+  "directory": "/home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/build2",
+  "command": "/usr/bin/c++ -DG4LIB_BUILD_DLL -DG4UI_USE_QT -DG4VIS_USE_OPENGLQT -DG4VIS_USE_RAYTRACERX -DG4VIS_USE_RAYTRACER_QT -DG4VIS_USE_TOOLSSG_QT_GLES -DG4VIS_USE_TOOLSSG_QT_ZB -DPTL_BUILD_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -isystem /home/sgarnero/Geant4/geant4-v11.4.1/include/Geant4 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -fPIC -o CMakeFiles/sim.dir/action.cc.o -c /home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/action.cc",
+  "file": "/home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/action.cc",
+  "output": "CMakeFiles/sim.dir/action.cc.o"
 },
 {
-  "directory": "/home/simo-garne/geant4/code/sim/build2",
-  "command": "/usr/bin/c++ -DG4LIB_BUILD_DLL -DG4UI_USE_QT -DG4VIS_USE_OPENGLQT -DG4VIS_USE_RAYTRACERX -DG4VIS_USE_TOOLSSG_QT_GLES -DG4VIS_USE_TOOLSSG_QT_ZB -DPTL_BUILD_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -isystem /home/simo-garne/geant4/geant4-v11.3.2-mt-install/include/Geant4 -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -fPIC -o CMakeFiles/sim.dir/construction.cc.o -c /home/simo-garne/geant4/code/sim/construction.cc",
-  "file": "/home/simo-garne/geant4/code/sim/construction.cc"
+  "directory": "/home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/build2",
+  "command": "/usr/bin/c++ -DG4LIB_BUILD_DLL -DG4UI_USE_QT -DG4VIS_USE_OPENGLQT -DG4VIS_USE_RAYTRACERX -DG4VIS_USE_RAYTRACER_QT -DG4VIS_USE_TOOLSSG_QT_GLES -DG4VIS_USE_TOOLSSG_QT_ZB -DPTL_BUILD_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -isystem /home/sgarnero/Geant4/geant4-v11.4.1/include/Geant4 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -fPIC -o CMakeFiles/sim.dir/construction.cc.o -c /home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/construction.cc",
+  "file": "/home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/construction.cc",
+  "output": "CMakeFiles/sim.dir/construction.cc.o"
 },
 {
-  "directory": "/home/simo-garne/geant4/code/sim/build2",
-  "command": "/usr/bin/c++ -DG4LIB_BUILD_DLL -DG4UI_USE_QT -DG4VIS_USE_OPENGLQT -DG4VIS_USE_RAYTRACERX -DG4VIS_USE_TOOLSSG_QT_GLES -DG4VIS_USE_TOOLSSG_QT_ZB -DPTL_BUILD_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -isystem /home/simo-garne/geant4/geant4-v11.3.2-mt-install/include/Geant4 -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -fPIC -o CMakeFiles/sim.dir/detector.cc.o -c /home/simo-garne/geant4/code/sim/detector.cc",
-  "file": "/home/simo-garne/geant4/code/sim/detector.cc"
+  "directory": "/home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/build2",
+  "command": "/usr/bin/c++ -DG4LIB_BUILD_DLL -DG4UI_USE_QT -DG4VIS_USE_OPENGLQT -DG4VIS_USE_RAYTRACERX -DG4VIS_USE_RAYTRACER_QT -DG4VIS_USE_TOOLSSG_QT_GLES -DG4VIS_USE_TOOLSSG_QT_ZB -DPTL_BUILD_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -isystem /home/sgarnero/Geant4/geant4-v11.4.1/include/Geant4 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -fPIC -o CMakeFiles/sim.dir/detector.cc.o -c /home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/detector.cc",
+  "file": "/home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/detector.cc",
+  "output": "CMakeFiles/sim.dir/detector.cc.o"
 },
 {
-  "directory": "/home/simo-garne/geant4/code/sim/build2",
-  "command": "/usr/bin/c++ -DG4LIB_BUILD_DLL -DG4UI_USE_QT -DG4VIS_USE_OPENGLQT -DG4VIS_USE_RAYTRACERX -DG4VIS_USE_TOOLSSG_QT_GLES -DG4VIS_USE_TOOLSSG_QT_ZB -DPTL_BUILD_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -isystem /home/simo-garne/geant4/geant4-v11.3.2-mt-install/include/Geant4 -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -fPIC -o CMakeFiles/sim.dir/event.cc.o -c /home/simo-garne/geant4/code/sim/event.cc",
-  "file": "/home/simo-garne/geant4/code/sim/event.cc"
+  "directory": "/home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/build2",
+  "command": "/usr/bin/c++ -DG4LIB_BUILD_DLL -DG4UI_USE_QT -DG4VIS_USE_OPENGLQT -DG4VIS_USE_RAYTRACERX -DG4VIS_USE_RAYTRACER_QT -DG4VIS_USE_TOOLSSG_QT_GLES -DG4VIS_USE_TOOLSSG_QT_ZB -DPTL_BUILD_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -isystem /home/sgarnero/Geant4/geant4-v11.4.1/include/Geant4 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -fPIC -o CMakeFiles/sim.dir/event.cc.o -c /home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/event.cc",
+  "file": "/home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/event.cc",
+  "output": "CMakeFiles/sim.dir/event.cc.o"
 },
 {
-  "directory": "/home/simo-garne/geant4/code/sim/build2",
-  "command": "/usr/bin/c++ -DG4LIB_BUILD_DLL -DG4UI_USE_QT -DG4VIS_USE_OPENGLQT -DG4VIS_USE_RAYTRACERX -DG4VIS_USE_TOOLSSG_QT_GLES -DG4VIS_USE_TOOLSSG_QT_ZB -DPTL_BUILD_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -isystem /home/simo-garne/geant4/geant4-v11.3.2-mt-install/include/Geant4 -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -fPIC -o CMakeFiles/sim.dir/generator.cc.o -c /home/simo-garne/geant4/code/sim/generator.cc",
-  "file": "/home/simo-garne/geant4/code/sim/generator.cc"
+  "directory": "/home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/build2",
+  "command": "/usr/bin/c++ -DG4LIB_BUILD_DLL -DG4UI_USE_QT -DG4VIS_USE_OPENGLQT -DG4VIS_USE_RAYTRACERX -DG4VIS_USE_RAYTRACER_QT -DG4VIS_USE_TOOLSSG_QT_GLES -DG4VIS_USE_TOOLSSG_QT_ZB -DPTL_BUILD_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -isystem /home/sgarnero/Geant4/geant4-v11.4.1/include/Geant4 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -fPIC -o CMakeFiles/sim.dir/generator.cc.o -c /home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/generator.cc",
+  "file": "/home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/generator.cc",
+  "output": "CMakeFiles/sim.dir/generator.cc.o"
 },
 {
-  "directory": "/home/simo-garne/geant4/code/sim/build2",
-  "command": "/usr/bin/c++ -DG4LIB_BUILD_DLL -DG4UI_USE_QT -DG4VIS_USE_OPENGLQT -DG4VIS_USE_RAYTRACERX -DG4VIS_USE_TOOLSSG_QT_GLES -DG4VIS_USE_TOOLSSG_QT_ZB -DPTL_BUILD_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -isystem /home/simo-garne/geant4/geant4-v11.3.2-mt-install/include/Geant4 -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -fPIC -o CMakeFiles/sim.dir/physics.cc.o -c /home/simo-garne/geant4/code/sim/physics.cc",
-  "file": "/home/simo-garne/geant4/code/sim/physics.cc"
+  "directory": "/home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/build2",
+  "command": "/usr/bin/c++ -DG4LIB_BUILD_DLL -DG4UI_USE_QT -DG4VIS_USE_OPENGLQT -DG4VIS_USE_RAYTRACERX -DG4VIS_USE_RAYTRACER_QT -DG4VIS_USE_TOOLSSG_QT_GLES -DG4VIS_USE_TOOLSSG_QT_ZB -DPTL_BUILD_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -isystem /home/sgarnero/Geant4/geant4-v11.4.1/include/Geant4 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -fPIC -o CMakeFiles/sim.dir/physics.cc.o -c /home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/physics.cc",
+  "file": "/home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/physics.cc",
+  "output": "CMakeFiles/sim.dir/physics.cc.o"
 },
 {
-  "directory": "/home/simo-garne/geant4/code/sim/build2",
-  "command": "/usr/bin/c++ -DG4LIB_BUILD_DLL -DG4UI_USE_QT -DG4VIS_USE_OPENGLQT -DG4VIS_USE_RAYTRACERX -DG4VIS_USE_TOOLSSG_QT_GLES -DG4VIS_USE_TOOLSSG_QT_ZB -DPTL_BUILD_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -isystem /home/simo-garne/geant4/geant4-v11.3.2-mt-install/include/Geant4 -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -fPIC -o CMakeFiles/sim.dir/run.cc.o -c /home/simo-garne/geant4/code/sim/run.cc",
-  "file": "/home/simo-garne/geant4/code/sim/run.cc"
+  "directory": "/home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/build2",
+  "command": "/usr/bin/c++ -DG4LIB_BUILD_DLL -DG4UI_USE_QT -DG4VIS_USE_OPENGLQT -DG4VIS_USE_RAYTRACERX -DG4VIS_USE_RAYTRACER_QT -DG4VIS_USE_TOOLSSG_QT_GLES -DG4VIS_USE_TOOLSSG_QT_ZB -DPTL_BUILD_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -isystem /home/sgarnero/Geant4/geant4-v11.4.1/include/Geant4 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -fPIC -o CMakeFiles/sim.dir/run.cc.o -c /home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/run.cc",
+  "file": "/home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/run.cc",
+  "output": "CMakeFiles/sim.dir/run.cc.o"
 },
 {
-  "directory": "/home/simo-garne/geant4/code/sim/build2",
-  "command": "/usr/bin/c++ -DG4LIB_BUILD_DLL -DG4UI_USE_QT -DG4VIS_USE_OPENGLQT -DG4VIS_USE_RAYTRACERX -DG4VIS_USE_TOOLSSG_QT_GLES -DG4VIS_USE_TOOLSSG_QT_ZB -DPTL_BUILD_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -isystem /home/simo-garne/geant4/geant4-v11.3.2-mt-install/include/Geant4 -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -fPIC -o CMakeFiles/sim.dir/stepping.cc.o -c /home/simo-garne/geant4/code/sim/stepping.cc",
-  "file": "/home/simo-garne/geant4/code/sim/stepping.cc"
+  "directory": "/home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/build2",
+  "command": "/usr/bin/c++ -DG4LIB_BUILD_DLL -DG4UI_USE_QT -DG4VIS_USE_OPENGLQT -DG4VIS_USE_RAYTRACERX -DG4VIS_USE_RAYTRACER_QT -DG4VIS_USE_TOOLSSG_QT_GLES -DG4VIS_USE_TOOLSSG_QT_ZB -DPTL_BUILD_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -isystem /home/sgarnero/Geant4/geant4-v11.4.1/include/Geant4 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -fPIC -o CMakeFiles/sim.dir/stepping.cc.o -c /home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/stepping.cc",
+  "file": "/home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/stepping.cc",
+  "output": "CMakeFiles/sim.dir/stepping.cc.o"
 },
 {
-  "directory": "/home/simo-garne/geant4/code/sim/build2",
-  "command": "/usr/bin/c++ -DG4LIB_BUILD_DLL -DG4UI_USE_QT -DG4VIS_USE_OPENGLQT -DG4VIS_USE_RAYTRACERX -DG4VIS_USE_TOOLSSG_QT_GLES -DG4VIS_USE_TOOLSSG_QT_ZB -DPTL_BUILD_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -isystem /home/simo-garne/geant4/geant4-v11.3.2-mt-install/include/Geant4 -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -fPIC -o CMakeFiles/sim.dir/tracking.cc.o -c /home/simo-garne/geant4/code/sim/tracking.cc",
-  "file": "/home/simo-garne/geant4/code/sim/tracking.cc"
+  "directory": "/home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/build2",
+  "command": "/usr/bin/c++ -DG4LIB_BUILD_DLL -DG4UI_USE_QT -DG4VIS_USE_OPENGLQT -DG4VIS_USE_RAYTRACERX -DG4VIS_USE_RAYTRACER_QT -DG4VIS_USE_TOOLSSG_QT_GLES -DG4VIS_USE_TOOLSSG_QT_ZB -DPTL_BUILD_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -isystem /home/sgarnero/Geant4/geant4-v11.4.1/include/Geant4 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -fPIC -o CMakeFiles/sim.dir/tracking.cc.o -c /home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/tracking.cc",
+  "file": "/home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/tracking.cc",
+  "output": "CMakeFiles/sim.dir/tracking.cc.o"
 }
 ]

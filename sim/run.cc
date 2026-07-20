@@ -19,9 +19,12 @@ MyRunAction::MyRunAction(){
     man->CreateNtuple("Hits", "Hits");
     man->CreateNtupleIColumn("fEvent");
     man->CreateNtupleIColumn("fDetectorID");  
-    man->CreateNtupleDColumn("fX");
-    man->CreateNtupleDColumn("fY");
-    man->CreateNtupleDColumn("fZ");
+    man->CreateNtupleDColumn("fX_det");
+    man->CreateNtupleDColumn("fY_det");
+    man->CreateNtupleDColumn("fZ_det");
+    man->CreateNtupleDColumn("fX_photon");
+    man->CreateNtupleDColumn("fY_photon");
+    man->CreateNtupleDColumn("fZ_photon");
     man->CreateNtupleDColumn("fWavelength");
     man->CreateNtupleDColumn("fTime");
     man->FinishNtuple(1);

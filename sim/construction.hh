@@ -19,6 +19,12 @@
 #include "G4LogicalSkinSurface.hh"
 #include "G4VisAttributes.hh"
 #include "G4Color.hh"
+#include "G4Trd.hh"
+#include "G4UnionSolid.hh"
+#include "G4VSolid.hh"
+#include "G4Transform3D.hh"
+#include "G4ExtrudedSolid.hh"
+#include "G4TwoVector.hh"
 
 #include "detector.hh"
 
@@ -32,8 +38,10 @@ class MyDetectorConstruction : public G4VUserDetectorConstruction{
 
     private:
 
-        G4Box *solidWorld, *solidRadiator, *solidDetector, *solidScintillator, *solidAtmosphere, *solidMirror_1, *solidWindow;
+        G4VSolid *solidRadiator;
+        G4Box *solidWorld, *solidDetector, *solidScintillator, *solidAtmosphere, *solidMirror_1, *solidWindow;
         G4Sphere *solidMirror;
+        G4Tubs *solidRadiatorCilinder, *solidDetectorCilinder;
         // G4Tubs *solidScintillator;
         G4Cons *solidRadiatorProx;
         G4Tubs *solidRadiatorSilica;
@@ -51,6 +59,8 @@ class MyDetectorConstruction : public G4VUserDetectorConstruction{
         void ConstructGasPM();
         void ConstructFusedSilica();
         void ConstructFusedSilicaProx();
+        void ConstructFusedSilicaBarTest();
+        void ConstructFusedSilicaVshape();
 
         virtual void ConstructSDandField();
 
@@ -62,7 +72,7 @@ class MyDetectorConstruction : public G4VUserDetectorConstruction{
 
         G4double xWorld, yWorld, zWorld;  
         
-        G4bool isFusedSilica, isFusedSilicaProx, isCherenkov, isScintillator, isTOF, isAtmosphere, isGasPM;
+        G4bool isFusedSilica, isFusedSilicaProx, isCherenkov, isScintillator, isTOF, isAtmosphere, isGasPM, isFusedSilicaBarTest, isFusedSilicaVshape;
 
         G4OpticalSurface *mirrorSurface, *fusedSilicaSurface;
 

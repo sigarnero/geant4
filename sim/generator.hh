@@ -14,6 +14,8 @@
 #include "G4Geantino.hh"
 #include "Randomize.hh"
 
+#include <cmath>
+
 class MyPrimaryGenerator : public G4VUserPrimaryGeneratorAction{
     public:
         MyPrimaryGenerator();
