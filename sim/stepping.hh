@@ -7,6 +7,7 @@
 #include "G4OpBoundaryProcess.hh"
 #include "G4ProcessManager.hh"
 #include "G4RunManager.hh"
+#include <set>
 
 #include "event.hh"
 #include "construction.hh"
@@ -25,6 +26,11 @@ private:
     // Map to track reflections per photon
     std::map<G4int, G4int> fPhotonReflectionCount;
     std::map<G4int, G4double> fPhotonPathLength;
+    std::set<G4int> fFirstBoundaryLogged;
+
+    // Per interrogare lo stato reale (transmission vs TIR) al boundary
+    G4OpBoundaryProcess* fBoundaryProcess;
+    void FindBoundaryProcess();
 };
 
 #endif

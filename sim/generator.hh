@@ -28,6 +28,8 @@ class MyPrimaryGenerator : public G4VUserPrimaryGeneratorAction{
         // G4GeneralParticleSource *fGPS;
         G4String particleName;
         G4ParticleDefinition *particle;
+        // Calcola un vettore di polarizzazione ortogonale alla direzione data
+        G4ThreeVector ComputeOrthogonalPolarization(const G4ThreeVector& dir);
 };
 
 #endif

@@ -3,13 +3,36 @@
 MySteppingAction::MySteppingAction(MyEventAction *eventAction)
 {
     fEventAction = eventAction;
+    fBoundaryProcess = nullptr;
 }
 
 MySteppingAction::~MySteppingAction(){}
 
+void MySteppingAction::FindBoundaryProcess()
+{
+    G4ProcessManager* opManager = G4OpticalPhoton::OpticalPhoton()->GetProcessManager();
+    if(!opManager) return;
+
+    G4ProcessVector* postStepDoItVector = opManager->GetPostStepProcessVector(typeDoIt);
+    G4int nProcesses = postStepDoItVector->entries();
+
+    for(G4int i = 0; i < nProcesses; i++){
+        G4VProcess* proc = (*postStepDoItVector)[i];
+        G4OpBoundaryProcess* opProc = dynamic_cast<G4OpBoundaryProcess*>(proc);
+        if(opProc){
+            fBoundaryProcess = opProc;
+            return;
+        }
+    }
+
+    // Diagnostica: se arriviamo qui, il processo non è stato trovato
+    G4cerr << "WARNING: G4OpBoundaryProcess not found in process list!" << G4endl;
+}
+
 void MySteppingAction::UserSteppingAction(const G4Step *step){
 
     const G4Track* track = step->GetTrack();
+    if(!fBoundaryProcess) FindBoundaryProcess();
 
     // ---- Hadronic Inelastic (Bertini) interaction tracking ----
     // Check the post-step process for hadronic inelastic interactions
@@ -85,6 +108,113 @@ void MySteppingAction::UserSteppingAction(const G4Step *step){
                 fPhotonReflectionCount[trackID]++;
             }
         }
+
+        // ---- NEW: registra i veri incontri con le facce terminali (piano YZ) ----
+        G4String preName  = preVolume  ? preVolume->GetName()  : "OutOfWorld";
+        G4String postName = postVolume ? postVolume->GetName() : "OutOfWorld";
+
+        // ---- NEW: log the very first optical boundary encounter per photon ----
+        if(atBoundary && fBoundaryProcess && stepLength > 0 && preName == "physRadiator" && fFirstBoundaryLogged.find(trackID) == fFirstBoundaryLogged.end()){
+            fFirstBoundaryLogged.insert(trackID);
+
+            G4ThreeVector exitPos = postStepPoint->GetPosition();
+            G4ThreeVector exitDir = preStepPoint->GetMomentumDirection();
+
+            const G4double barHalfLength = 150.0*mm;
+            const G4double barHalfY      = 15.0*mm;
+            const G4double barHalfZ      = 5.0*mm;          // = radiatorThickness for this run
+            const G4double posTolerance  = 1.0*um;
+
+            const G4ThreeVector radiatorPivot(0, 0, 150.0*mm);  // must match construction.cc's pivot! If change tilt angle it breaks!!
+
+            G4ThreeVector localPos = exitPos - radiatorPivot;   // NEW: convert to radiator-local frame
+
+            G4int face = -1;
+            G4ThreeVector normal;
+
+            if(std::abs(std::abs(localPos.x()) - barHalfLength) < posTolerance){
+                face = 2; normal = G4ThreeVector(1,0,0);
+            } else if(std::abs(std::abs(localPos.y()) - barHalfY) < posTolerance){
+                face = 0; normal = G4ThreeVector(0,1,0);
+            } else if(std::abs(std::abs(localPos.z()) - barHalfZ) < posTolerance){
+                face = 1; normal = G4ThreeVector(0,0,1);
+            }
+
+            if(face >= 0){
+                G4double cosTheta = std::abs(exitDir.dot(normal));
+                if(cosTheta > 1.0) cosTheta = 1.0;
+                G4double angleIncidence = std::acos(cosTheta) * 180.0/CLHEP::pi;
+
+                G4OpBoundaryProcessStatus status = fBoundaryProcess->GetStatus();
+                G4int transmitted = (status == FresnelRefraction) ? 1 : 0;
+
+                G4double wavelength = (1.239841939*eV/track->GetMomentum().mag())*1E+03;
+                G4int evt = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
+
+                G4AnalysisManager *man = G4AnalysisManager::Instance();
+                man->FillNtupleIColumn(14, 0, evt);
+                man->FillNtupleIColumn(14, 1, trackID);
+                man->FillNtupleIColumn(14, 2, face);
+                man->FillNtupleDColumn(14, 3, angleIncidence);
+                man->FillNtupleIColumn(14, 4, transmitted);
+                man->FillNtupleDColumn(14, 5, wavelength);
+                man->AddNtupleRow(14);
+            } else {
+                static G4int nFaceMatchFail = 0;
+                nFaceMatchFail++;
+                if(nFaceMatchFail % 100 == 1){  // don't flood stdout
+                    G4cerr << "FirstBounce: face match failed at pos ("
+                           << exitPos.x()/mm << ", " << exitPos.y()/mm << ", " << exitPos.z()/mm
+                           << ") mm" << G4endl;
+                }
+            }
+        }
+
+        if(atBoundary && fBoundaryProcess && preName == "physRadiator" && postName != "physRadiator"){
+
+            G4ThreeVector exitPos = postStepPoint->GetPosition();
+
+            const G4double barHalfLength = 150.0*mm;
+            const G4double posTolerance  = 1.0*um;
+
+            G4bool isEndFace = (std::abs(std::abs(exitPos.x()) - barHalfLength) < posTolerance);    // isFusedSilica = true;
+            // G4bool isEndFace = (std::abs(std::abs(exitPos.z()) - 3*barHalfLength) < posTolerance);    // isFusedSilicaBarTest = true;
+
+            if(isEndFace){
+                const G4double minMeaningfulStep = 1.0e-9*mm;  // soglia, regolabile
+                if(stepLength < minMeaningfulStep){
+                // non è un nuovo bounce, è l'oscillazione numerica dello stesso punto --> non fa nulla
+                } else {
+                    G4ThreeVector exitDir = preStepPoint->GetMomentumDirection();
+
+                    G4double angleFromAxis = exitDir.angle(G4ThreeVector(1,0,0)) * 180.0/CLHEP::pi;
+                    if(angleFromAxis > 90.0) angleFromAxis = 180.0 - angleFromAxis;
+
+                    G4int evt = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
+                    G4int nReflSoFar   = fPhotonReflectionCount.count(trackID) ? fPhotonReflectionCount[trackID] : 0;
+                    G4double pathSoFar = fPhotonPathLength.count(trackID) ? fPhotonPathLength[trackID] : 0.0;
+                    G4double wavelength = (1.239841939*eV/track->GetMomentum().mag())*1E+03;
+                    G4int wentToDetector = (postName == "physDetector") ? 1 : 0;
+
+                    G4OpBoundaryProcessStatus status = fBoundaryProcess->GetStatus();
+                    G4int transmitted = (status == FresnelRefraction) ? 1 : 0;
+
+                    G4AnalysisManager *man = G4AnalysisManager::Instance();
+                    man->FillNtupleIColumn(13, 0, evt);
+                    man->FillNtupleIColumn(13, 1, trackID);
+                    man->FillNtupleDColumn(13, 2, exitPos.x()/mm);
+                    man->FillNtupleDColumn(13, 3, exitPos.y()/mm);
+                    man->FillNtupleDColumn(13, 4, exitPos.z()/mm);
+                    man->FillNtupleDColumn(13, 5, angleFromAxis);
+                    man->FillNtupleIColumn(13, 6, nReflSoFar);
+                    man->FillNtupleDColumn(13, 7, pathSoFar/mm);
+                    man->FillNtupleDColumn(13, 8, wavelength);
+                    man->FillNtupleIColumn(13, 9, wentToDetector);
+                    man->FillNtupleIColumn(13, 10, transmitted);
+                    man->AddNtupleRow(13);
+                }
+            }
+        }
         
         // When photon is killed, record data
         if(track->GetTrackStatus() == fStopAndKill){
@@ -125,6 +255,7 @@ void MySteppingAction::UserSteppingAction(const G4Step *step){
             // Clean up
             fPhotonReflectionCount.erase(trackID);
             fPhotonPathLength.erase(trackID);
+            fFirstBoundaryLogged.erase(trackID);
         }
         
         return;

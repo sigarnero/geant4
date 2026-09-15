@@ -39,15 +39,15 @@ class MyDetectorConstruction : public G4VUserDetectorConstruction{
     private:
 
         G4VSolid *solidRadiator;
-        G4Box *solidWorld, *solidDetector, *solidScintillator, *solidAtmosphere, *solidMirror_1, *solidWindow;
+        G4Box *solidWorld, *solidDetector, *solidScintillator, *solidAtmosphere, *solidMirror_1, *solidWindow, *solidStructure;
         G4Sphere *solidMirror;
         G4Tubs *solidRadiatorCilinder, *solidDetectorCilinder;
         // G4Tubs *solidScintillator;
         G4Cons *solidRadiatorProx;
         G4Tubs *solidRadiatorSilica;
-        G4LogicalVolume *logicWorld, *logicRadiator, *logicDetector, *logicScintillator, *logicAtmosphere[10], *logicMirror, *logicMirror_1, *logicWindow;      // Up to 10 layers of atmosphere
-        G4VPhysicalVolume *physWorld, *physRadiator, *physDetector, *physScintillator, *physAtmosphere[10], *physMirror, *physMirror_1, *physWindow;
-        G4Material *SiO2, *H2O, *Aerogel, *worldMat, *NaI, *Air[10], *MgF2;        // Air not constant in atmosphere layers
+        G4LogicalVolume *logicWorld, *logicRadiator, *logicDetector, *logicScintillator, *logicAtmosphere[10], *logicMirror, *logicMirror_1, *logicWindow, *logicStructure;      // Up to 10 layers of atmosphere
+        G4VPhysicalVolume *physWorld, *physRadiator, *physDetector, *physScintillator, *physAtmosphere[10], *physMirror, *physMirror_1, *physWindow, *physStructure;
+        G4Material *SiO2, *H2O, *Aerogel, *worldMat, *NaI, *Air[10], *MgF2, *OpticalGrease, *Polythilene;        // Air not constant in atmosphere layers
         G4Element *C, *Na, *I, *N, *O, *Mg, *F;
 
         void DefineMaterial();

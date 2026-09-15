@@ -26,11 +26,13 @@ MyDetectorConstruction::MyDetectorConstruction(){
     fusedSilicaSurface = nullptr;      // ADD THIS LINE
     skin = nullptr;                     // ADD THIS LINE (optional but good practice)
     skin_1 = nullptr;                   // ADD THIS LINE (optional but good practice)
+    solidStructure = nullptr;      // NEW
+    logicStructure = nullptr;
 
     nCols = 50;
     nRows = 50;
 
-    radiatorThickness = 1.0*cm;
+    radiatorThickness = 5.0*mm;
 
     DefineMaterial();
 
@@ -38,7 +40,7 @@ MyDetectorConstruction::MyDetectorConstruction(){
     yWorld = 0.5*m;
     zWorld = 0.5*m;
 
-    isFusedSilica = false;                  // The Mu2e one
+    isFusedSilica = true;                  // The Mu2e one
     isFusedSilicaProx = false;
     isCherenkov = false;
     isScintillator = false;
@@ -46,7 +48,7 @@ MyDetectorConstruction::MyDetectorConstruction(){
     isAtmosphere = false;
     isGasPM = false;
     isFusedSilicaBarTest = false;
-    isFusedSilicaVshape = true;  
+    isFusedSilicaVshape = false;           // V-shape geometry for fused silica
 }
 
 MyDetectorConstruction::~MyDetectorConstruction(){
@@ -76,29 +78,31 @@ void MyDetectorConstruction::ConstructSDandField(){
 //     }
 
 //     // --- Parametri geometrici ---
-//     const G4double barHalfLength   = 10.0*cm;   // punta della barra: invariata
-//     const G4double taperFullLength = 9.0*cm;     // "ultimi 2 cm" per estremità
+//     const G4double barHalfLength   = 15.0*cm;   // punta della barra: invariata
+//     const G4double taperFullLength = 13.0*cm;    // "ultimi 2 cm" per estremità
 //     const G4double taperHalfLength = taperFullLength/2.0;
 //     const G4double straightHalfLength = barHalfLength - taperFullLength; // 20mm
 
-//     const G4double barHalfY = 12.5*mm;           // semilarghezza bar in Y (invariata)
-//     const G4double barHalfZ = radiatorThickness; // semilarghezza bar in Z (invariata)
+//     const G4double barHalfY = 12.5*mm;           // semilarghezza bar in Y (invariata, sezione centrale)
+//     const G4double barHalfZ = radiatorThickness;  // semilarghezza bar in Z (invariata, sezione centrale)
 
-//     const G4double detHalfY = 8.0*mm;            // 16mm/2, area attiva rivelatore
-//     const G4double detHalfZ = 8.0*mm;
+//     // MODIFICATO: area attiva rivelatore ora 5x5 cm^2 (50mm x 50mm)
+//     const G4double detHalfY = 25.0*mm;
+//     const G4double detHalfZ = 25.0*mm;
 
-//     // --- Tratto centrale dritto ---
+//     // --- Tratto centrale dritto (sezione barra normale, invariato) ---
 //     G4Box *solidRadiatorBox = new G4Box("solidRadiatorBox",
 //                                          straightHalfLength, barHalfY, barHalfZ);
 
-//     // --- Tronco di piramide (stessa forma riutilizzata per entrambe le estremità) ---
-//     // dx1,dy1 al lato "largo" (-dz locale); dx2,dy2 al lato "stretto" (+dz locale)
+//     // --- Tronco di piramide: ora si ALLARGA dalla barra (centro) verso il detector (bordo) ---
+//     // dx1,dy1 al lato BARRA (-dz locale, verso il centro, piu' piccolo)
+//     // dx2,dy2 al lato DETECTOR (+dz locale, verso l'esterno, ora piu' grande)
 //     G4Trd *solidTaper = new G4Trd("solidTaper",
-//                                    barHalfZ, barHalfZ,   // dx1 (largo), dx2 (stretto) -> mappano su Z globale
-//                                    barHalfY, detHalfY,   // dy1 (largo), dy2 (stretto) -> mappano su Y globale
-//                                    taperHalfLength);      // dz -> mappa su X globale dopo rotazione
+//                                    barHalfZ, detHalfZ,   // MODIFICATO: ora taper anche in Z
+//                                    barHalfY, detHalfY,   // Y: barra -> detector (allargamento)
+//                                    taperHalfLength);
 
-//     // Rotazioni: rotateY(90deg) manda l'asse locale +z sull'asse globale +x
+//     // Rotazioni: invariate, mappano ancora l'asse locale z del Trd sull'asse globale X
 //     G4RotationMatrix *rotPlusX  = new G4RotationMatrix();
 //     rotPlusX->rotateY(-90.*deg);
 //     G4RotationMatrix *rotMinusX = new G4RotationMatrix();
@@ -106,12 +110,10 @@ void MyDetectorConstruction::ConstructSDandField(){
 
 //     const G4double taperCenterOffset = straightHalfLength + taperHalfLength; // 90mm
 
-//     // Unione: box + tronco a +X (largo verso il box, stretto verso +X, cioè verso il detector)
 //     G4UnionSolid *tempUnion = new G4UnionSolid("tempUnion",
 //         solidRadiatorBox, solidTaper,
 //         rotPlusX, G4ThreeVector(taperCenterOffset, 0, 0));
 
-//     // Unione: + tronco a -X (largo verso il box, stretto verso -X)
 //     solidRadiator = new G4UnionSolid("solidRadiator",
 //         tempUnion, solidTaper,
 //         rotMinusX, G4ThreeVector(-taperCenterOffset, 0, 0));
@@ -124,7 +126,6 @@ void MyDetectorConstruction::ConstructSDandField(){
 //     physRadiator = new G4PVPlacement(0, G4ThreeVector(0,0,0.15*m),
 //                                       logicRadiator, "physRadiator", logicWorld, false, 0, true);
 
-//     // Skin surface applicata all'intero volume unito: nessun confine interno, seamless
 //     G4LogicalSkinSurface *radiatorSkin = new G4LogicalSkinSurface("radiatorSkin", logicRadiator, fusedSilicaSurface);
 
 //     G4VisAttributes *radiatorVisAtt = new G4VisAttributes(G4Color(0.5, 0.5, 0., 1.));
@@ -133,11 +134,11 @@ void MyDetectorConstruction::ConstructSDandField(){
 
 //     fScoringVolume = logicRadiator;
 
-//     // --- Detector: area attiva ridotta a 16mm x 16mm ---
+//     // --- Detector: 5x5 cm^2, invariato nella logica, usa detHalfY/detHalfZ aggiornati ---
 //     if(solidDetector != nullptr){
 //         delete solidDetector;
 //     }
-//     const G4double detHalfThicknessX = 10.0*mm;  // spessore lungo x (invariato, arbitrario)
+//     const G4double detHalfThicknessX = 0.1*mm;  // spessore lungo x (invariato, arbitrario)
 
 //     solidDetector = new G4Box("solidDetector", detHalfThicknessX, detHalfY, detHalfZ);
 
@@ -163,13 +164,15 @@ void MyDetectorConstruction::ConstructFusedSilicaBarTest(){
         delete solidRadiator;
     }
 
-    solidRadiatorCilinder = new G4Tubs("solidRadiator", 0., barRadius, barHalfLen, 0.*deg, 360.*deg);
+    // solidRadiatorCilinder = new G4Tubs("solidRadiator", 0., barRadius, barHalfLen, 0.*deg, 360.*deg);
+    solidRadiator = new G4Box("solidRadiator", radiatorThickness, 12.5*mm, 100*mm);
 
     if(logicRadiator != nullptr) {
         delete logicRadiator;
     }
 
-    logicRadiator = new G4LogicalVolume(solidRadiatorCilinder, SiO2, "logicRadiator");
+    logicRadiator = new G4LogicalVolume(solidRadiator, SiO2, "logicRadiator");
+    // logicRadiator = new G4LogicalVolume(solidRadiatorCilinder, SiO2, "logicRadiator");
 
     // Nessuna rotazione necessaria: l'asse del G4Tubs è già lungo z
     physRadiator = new G4PVPlacement(0, G4ThreeVector(0, 0, barCenterZ),
@@ -184,20 +187,22 @@ void MyDetectorConstruction::ConstructFusedSilicaBarTest(){
     fScoringVolume = logicRadiator;
 
     // --- Rivelatore: disco sottile a UNA estremità della barra (z+) ---
-    const G4double detHalfThick = 1.0*mm;          // spessore del rivelatore, sottile
+    const G4double detHalfThick = 0.1*mm;          // spessore del rivelatore, sottile
     const G4double detRadius    = barRadius;       // stesso raggio della barra (o leggermente maggiore)
 
-    if(solidDetectorCilinder != nullptr){
-        delete solidDetectorCilinder;
+    if(solidDetector != nullptr){
+        delete solidDetector;
     }
 
-    solidDetectorCilinder = new G4Tubs("solidDetector", 0., detRadius, detHalfThick, 0.*deg, 360.*deg);
+    // solidDetectorCilinder = new G4Tubs("solidDetector", 0., detRadius, detHalfThick, 0.*deg, 360.*deg);
+    solidDetector = new G4Box("solidDetector", 10.0*mm, 12.5*mm, 0.1*mm);    // Detector grande
+    // solidDetector = new G4Box("solidDetector", 8.0*mm, 8.0*mm, 0.1*mm);    // 16 x16 mm
 
     if(logicDetector != nullptr){
         delete logicDetector;
     }
 
-    logicDetector = new G4LogicalVolume(solidDetectorCilinder, worldMat, "logicDetector");
+    logicDetector = new G4LogicalVolume(solidDetector, OpticalGrease, "logicDetector");
     logicDetector->SetVisAttributes(new G4VisAttributes(G4Colour(1,0,0,0.5)));
 
     // Posizionato subito dopo l'estremità +z della barra (a contatto)
@@ -273,14 +278,14 @@ void MyDetectorConstruction::ConstructFusedSilicaProx(){
     }
 }
 
-//Questa serve quando vogliamo tornare al radiatore dritto semplice
+// Questa serve quando vogliamo tornare al radiatore dritto semplice
 void MyDetectorConstruction::ConstructFusedSilica(){
     // IMPORTANTE: Cancella e ricrea il solidRadiator con il nuovo spessore
     if(solidRadiator != nullptr) {
         delete solidRadiator;
     }
     
-    solidRadiator = new G4Box("solidRadiator", 100*mm, 12.5*mm, radiatorThickness);
+    solidRadiator = new G4Box("solidRadiator", 150.0*mm, 15.0*mm, radiatorThickness);
     
     // Ricrea anche il logicRadiator per applicare le modifiche
     if(logicRadiator != nullptr) {
@@ -316,27 +321,54 @@ void MyDetectorConstruction::ConstructFusedSilica(){
         delete solidDetector;
     }
 
-    // solidDetector = new G4Box("solidDetector", 10*mm, 12.5*mm, 10.0*mm);    // Detector grande
-    solidDetector = new G4Box("solidDetector", 10*mm, 8.0*mm, 8.0*mm);    // 16 x16 mm
+    // solidDetector = new G4Box("solidDetector", 0.1*mm, 25.0*mm, 25.0*mm);    // Detector grande
+    solidDetector = new G4Box("solidDetector", 0.1*mm, 2.0*mm, 2.0*mm);    // 4x4 mm
 
     if(logicDetector != nullptr){
         delete logicDetector;
     }
 
-    logicDetector = new G4LogicalVolume(solidDetector, worldMat, "logicDetector");
+    logicDetector = new G4LogicalVolume(solidDetector, OpticalGrease, "logicDetector");
     logicDetector->SetVisAttributes(new G4VisAttributes(G4Colour(1,0,0,0.5)));
     
     // --- Rivelatori: stesso pivot, stessa rotazione, offset lungo l'asse locale della barra ---
-    G4ThreeVector detOffsetPlus (110*mm, 0, 0);
-    G4ThreeVector detOffsetMinus(-110*mm, 0, 0);
+    G4ThreeVector detOffsetPlus (150.1*mm, 0, 0);
+    G4ThreeVector detOffsetMinus(-150.1*mm, 0, 0);
 
     G4Transform3D transformDet1 = G4Translate3D(pivot) * G4Rotate3D(*rotAssembly) * G4Translate3D(detOffsetPlus);
     G4Transform3D transformDet2 = G4Translate3D(pivot) * G4Rotate3D(*rotAssembly) * G4Translate3D(detOffsetMinus);
 
     physDetector = new G4PVPlacement(transformDet1, logicDetector, "physDetector", logicWorld, false, 0, true);
     physDetector = new G4PVPlacement(transformDet2, logicDetector, "physDetector", logicWorld, false, 1, true);
-}
 
+    // --- Strato sottile di polietilene, 10 cm prima della faccia d'ingresso del radiatore ---
+    if(solidStructure != nullptr){
+        delete solidStructure;
+    }
+    
+    const G4double structureHalfThickness = 10.0*mm;   // 0.5 = 1 mm totale
+    const G4double structureHalfX         = 50.0*mm;  // sezione 10x10 cm, ampiamente sufficiente rispetto a sigma=6mm del fascio
+    const G4double structureHalfY         = 15.0*mm;  // sezione 10x10 cm, ampiamente sufficiente rispetto a sigma=6mm del fascio
+    
+    solidStructure = new G4Box("solidStructure", structureHalfX, structureHalfY, structureHalfThickness);
+    
+    if(logicStructure != nullptr){
+        delete logicStructure;
+    }
+    logicStructure = new G4LogicalVolume(solidStructure, Polythilene, "logicStructure");
+    
+    G4VisAttributes *structureVisAtt = new G4VisAttributes(G4Colour(0.2, 0.6, 0.2, 0.5));
+    structureVisAtt->SetForceSolid(true);
+    logicStructure->SetVisAttributes(structureVisAtt);
+    
+    // Faccia d'ingresso del radiatore (lato sorgente): valida finché tiltAngle = 0.
+    // Se in futuro riattivi il tilt, questa formula va rifatta proiettando lungo la normale reale.
+    const G4double radiatorFrontFaceZ = pivot.z() - radiatorThickness;
+    const G4double structureZ = radiatorFrontFaceZ - 60.0*mm;   // 10 cm prima della faccia del radiatore
+    
+    physStructure = new G4PVPlacement(0, G4ThreeVector(0, 0, structureZ),
+                                       logicStructure, "physStructure", logicWorld, false, 0, true);
+}
 
 void MyDetectorConstruction::ConstructCherenkov(){
 
@@ -478,7 +510,7 @@ void MyDetectorConstruction::ConstructFusedSilicaVshape(){
     // --- Parametri geometrici ---
     const G4double barHalfY      = 12.5*mm;
     const G4double barHalfZ      = radiatorThickness;
-    const G4double tiltAngle     = 40.*deg;
+    const G4double tiltAngle     = 46.8*deg;
     const G4double windowHalfX   = 5.0*mm;
     const G4double armHalfLength = 47.5*mm;
     const G4double armLen        = 2.*armHalfLength;
@@ -688,6 +720,14 @@ void MyDetectorConstruction::DefineMaterial(){
     MgF2->AddElement(Mg, 1);
     MgF2->AddElement(F, 2);
 
+    // Grasso ottico: indice vicino a quello del fused silica per minimizzare TIR all'interfaccia radiatore-detector
+    OpticalGrease = new G4Material("OpticalGrease", 1.06*g/cm3, 2);
+    OpticalGrease->AddElement(C, 2);
+    OpticalGrease->AddElement(nist->FindOrBuildElement("H"), 6);
+
+    // Polietilene per lo strato sottile lungo il fascio
+    Polythilene = nist->FindOrBuildMaterial("G4_POLYETHYLENE");
+
     G4int nEntries = 22;
     // G4double energy[nEntries] = {1.239841939*eV/0.9, 1.239841939*eV/0.636, 1.239841939*eV/0.554, 1.239841939*eV/0.517, 1.239841939*eV/0.466, 
     //     1.239841939*eV/0.401, 1.239841939*eV/0.378, 1.239841939*eV/0.341, 1.239841939*eV/0.318, 1.239841939*eV/0.287, 1.239841939*eV/0.268, 
@@ -794,6 +834,15 @@ void MyDetectorConstruction::DefineMaterial(){
     // fusedSilicaSurface->SetMaterialPropertiesTable(mptSiO2);
 
     SiO2->SetMaterialPropertiesTable(mptSiO2);
+
+    // RINDEX del grasso ottico: valore indicativo, sostituisci con quello reale del tuo prodotto se disponibile
+    G4double rindexGrease[nEntries];
+    for(G4int i = 0; i < nEntries; i++){
+        rindexGrease[i] = 1.46;   // circa il valore medio del SiO2, minimizza il salto d'indice
+    }
+    G4MaterialPropertiesTable *mptGrease = new G4MaterialPropertiesTable();
+    mptGrease->AddProperty("RINDEX", energy, rindexGrease, nEntries);
+    OpticalGrease->SetMaterialPropertiesTable(mptGrease);
 
     G4MaterialPropertiesTable *mptMirror = new G4MaterialPropertiesTable();
     mptMirror->AddProperty("REFLECTIVITY", energy, reflectivity, 2);

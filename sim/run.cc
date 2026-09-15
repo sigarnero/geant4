@@ -107,6 +107,32 @@ MyRunAction::MyRunAction(){
     man->CreateNtupleIColumn("fHadronicFlag");   // 1 if hadronic happened, 0 if not
     man->CreateNtupleIColumn("fNInteractions");  // number of hadronic interactions
     man->FinishNtuple(12);
+
+    // Photons genuinely transmitted out of the radiator (regardless of SiPM size)
+    man->CreateNtuple("RadiatorExit", "Photons Exiting Radiator Surface");
+    man->CreateNtupleIColumn("fEvent");
+    man->CreateNtupleIColumn("fTrackID");
+    man->CreateNtupleDColumn("fExitX");
+    man->CreateNtupleDColumn("fExitY");
+    man->CreateNtupleDColumn("fExitZ");
+    man->CreateNtupleDColumn("fAngleFromAxis");
+    man->CreateNtupleIColumn("fNReflectionsAtExit");
+    man->CreateNtupleDColumn("fPathLengthAtExit");
+    man->CreateNtupleDColumn("fWavelength");
+    man->CreateNtupleIColumn("fWentToDetector");
+    man->CreateNtupleIColumn("fTransmitted");
+    man->FinishNtuple(13);
+
+    // First optical-boundary encounter for each Cherenkov photon (diagnostic
+    // for the Cherenkov-angle / critical-angle correlation)
+    man->CreateNtuple("FirstBounce", "First Boundary Encounter per Photon");
+    man->CreateNtupleIColumn("fEvent");
+    man->CreateNtupleIColumn("fTrackID");
+    man->CreateNtupleIColumn("fFace");           // 0 = y-wall, 1 = z-wall, 2 = x end face
+    man->CreateNtupleDColumn("fAngleIncidence"); // deg, measured from local normal
+    man->CreateNtupleIColumn("fTransmitted");    // 1 = escaped (FresnelRefraction), 0 = TIR
+    man->CreateNtupleDColumn("fWavelength");     // nm
+    man->FinishNtuple(14);
 }
 
 MyRunAction::~MyRunAction(){}

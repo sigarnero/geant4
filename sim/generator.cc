@@ -14,6 +14,7 @@ MyPrimaryGenerator::MyPrimaryGenerator(){
     // fParticleGun->SetParticlePosition(pos);
     fParticleGun->SetParticleMomentumDirection(mom);
     fParticleGun->SetParticleMomentum(8. * GeV);
+    // fParticleGun->SetParticleEnergy(2. * MeV);
     fParticleGun->SetParticleDefinition(particle);
 }
 
@@ -23,13 +24,13 @@ MyPrimaryGenerator::MyPrimaryGenerator(){
 //     fParticleGun = new G4ParticleGun(1);
 
 //     G4ParticleTable *particleTable = G4ParticleTable::GetParticleTable();
-//     particleName = "opticalphoton";   // <-- importante, vedi nota sotto
+//     particleName = "proton";   // <-- importante, vedi nota sotto
 //     particle = particleTable->FindParticle(particleName);
 
 //     G4ThreeVector mom(0., 0., 1.);
 
 //     fParticleGun->SetParticleMomentumDirection(mom);
-//     fParticleGun->SetParticleEnergy(3.0996 * eV);   // <-- non SetParticleMomentum (questo per protoni)
+//     // fParticleGun->SetParticleEnergy(3.0996 * eV);   // <-- non SetParticleMomentum (questo per protoni)
 //     fParticleGun->SetParticleDefinition(particle);
 // }
 
@@ -44,9 +45,11 @@ void MyPrimaryGenerator::GeneratePrimaries(G4Event *anEvent){
     G4double x = G4RandGauss::shoot(0.0, sigma);  // Mean = 0, sigma = 6 mm
     G4double y = G4RandGauss::shoot(0.0, sigma);  // Mean = 0, sigma = 6 mm
     G4double z = -0.5*m;  // Starting position in z (adjust as needed)
+    // G4double z = 0.1*m; 
+
     
-    // G4ThreeVector position(x, y, z);
-    G4ThreeVector position(0, 0, z);
+    G4ThreeVector position(x, y, z);
+    // G4ThreeVector position(0, 0, z);
     fParticleGun->SetParticlePosition(position);
 
     G4AnalysisManager *man = G4AnalysisManager::Instance();
@@ -59,6 +62,39 @@ void MyPrimaryGenerator::GeneratePrimaries(G4Event *anEvent){
     // Generate the primary vertex
     fParticleGun->GeneratePrimaryVertex(anEvent);
 }
+
+// void MyPrimaryGenerator::GeneratePrimaries(G4Event *anEvent){    
+//     // ============================================================
+//     // UNICO PARAMETRO DA CAMBIARE: angolo di emissione rispetto
+//     // all'asse X (asse longitudinale della barra), nel piano XY
+//     // ============================================================
+//     G4double emissionAngle = 44.0*deg;   // <-- cambia solo questo - Questo è l angolo rispetto a z, quello di emissione Cherenkov è 90 - questo
+
+//     G4ThreeVector direction(std::sin(emissionAngle), 0., std::cos(emissionAngle));
+//     fParticleGun->SetParticleMomentumDirection(direction);
+
+//     G4ThreeVector polarization = ComputeOrthogonalPolarization(direction);
+//     fParticleGun->SetParticlePolarization(polarization);
+
+//     // Posizione fissa: coordinate assolute nel mondo (coerenti con la tua geometria)
+//     // Esempio: appena dentro l'estremità -x della barra in ConstructFusedSilicaBarTest
+//     G4double barCenterZ = 0.2*m;
+//     G4double x0 = 9.0*mm;   // dentro la barra, vicino a un'estremità
+//     G4double y0 = 0.0*mm;
+//     G4double z0 = barCenterZ-0.095*m;
+
+//     G4ThreeVector position(x0, y0, z0);
+//     fParticleGun->SetParticlePosition(position);
+
+//     G4AnalysisManager *man = G4AnalysisManager::Instance();
+//     man->FillNtupleIColumn(10, 0, anEvent->GetEventID());
+//     man->FillNtupleDColumn(10, 1, x0/mm);
+//     man->FillNtupleDColumn(10, 2, y0/mm);
+//     man->FillNtupleDColumn(10, 3, z0/mm);
+//     man->AddNtupleRow(10);
+
+//     fParticleGun->GeneratePrimaryVertex(anEvent);
+// }
 
 // void MyPrimaryGenerator::GeneratePrimaries(G4Event *anEvent){
 //     // Geometria della barra (deve coincidere con construction.cc!)
@@ -117,3 +153,19 @@ void MyPrimaryGenerator::GeneratePrimaries(G4Event *anEvent){
 // {
 //     fGPS->GeneratePrimaryVertex(anEvent);
 // }
+
+G4ThreeVector MyPrimaryGenerator::ComputeOrthogonalPolarization(const G4ThreeVector& dir)
+{
+    G4ThreeVector d = dir.unit();
+
+    // Riferimento: Z, a meno che dir non sia quasi parallelo a Z (allora uso Y)
+    G4ThreeVector ref(0., 0., 1.);
+    if(std::abs(d.dot(ref)) > 0.99){
+        ref = G4ThreeVector(0., 1., 0.);
+    }
+
+    G4ThreeVector polarization = d.cross(ref);
+    polarization = polarization.unit();
+
+    return polarization;
+}
