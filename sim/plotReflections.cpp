@@ -16,13 +16,13 @@
 // Change line 510 for the halfZ of the detector for the plotting of the 2D profile of the photon hits on the SiPMs. It should match the halfZ of the detector in construction.cc and stepping.cc
 
 // Uso: root -l 'plot_reflections.cpp("build2/output0_t1.root")'
-void plot_reflections(const char* filename = "SiPM4x4mmBarra1x3x30.root") {
+void plot_reflections(const char* filename = "build2/barraThicknessTest300x50x50.root") {
 
     TFile *f = TFile::Open(filename);
     if (!f || f->IsZombie()) { std::cerr << "Error: cannot open file" << std::endl; return; }
  
     // Crea la cartella di output (ricorsivo, non fallisce se esiste già)
-    TString outDir = "plotsSiPM4x4mmBarra1x3x30";
+    TString outDir = "plotsBarraThicknessTest300x50x50";   // Cambia il nome della cartella di output se vuoi
     gSystem->mkdir(outDir, kTRUE);
     TString outPath = TString(outDir) + "/";
  
@@ -32,8 +32,8 @@ void plot_reflections(const char* filename = "SiPM4x4mmBarra1x3x30.root") {
     // ── BINNING ─────────────────────────────────────────────────────────────
     // Adatta questi range ai tuoi dati reali (es. controlla con
     // pr->GetMinimum("fPathLength") / GetMaximum(...) prima di runnare)
-    const int    nbinsRefl = 30;
-    const double reflMin   = 0.,   reflMax   = 30.;    // fNReflections
+    const int    nbinsRefl = 100;
+    const double reflMin   = 0.,   reflMax   = 100.;    // fNReflections
     const int    nbinsPath = 50;
     const double pathMin   = 0.,   pathMax   = 1000.;   // fPathLength [mm]
     // ─────────────────────────────────────────────────────────────────────────
@@ -74,7 +74,7 @@ void plot_reflections(const char* filename = "SiPM4x4mmBarra1x3x30.root") {
         nbinsRefl, reflMin, reflMax, nbinsWL, wlMin, wlMax);
     hWLvsReflLost->SetDirectory(0);
 
-    TH1D *hPathLength = new TH1D("hPathLength", "Distanza percorsa dai fotoni; Length [mm]; Events", 100, 0, 1000);
+    TH1D *hPathLength = new TH1D("hPathLength", "Distanza percorsa dai fotoni; Length [mm]; Events", 100, 0, 5000);
     hPathLength->SetDirectory(0);
  
     Int_t fEvent, fTrackID, fNReflections, fDetectorID, fReachedEnd;

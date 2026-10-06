@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 
 project(Simulation1)
 
@@ -8,8 +8,8 @@ find_package(Geant4 REQUIRED ui_all vis_all)
 
 include(${Geant4_USE_FILE})
 
-file(GLOB sources ${PROJECT_SOURCE_DIR}/*.cc)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/*.hh)
+file(GLOB sources CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/*.cc)
+file(GLOB headers CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/*.hh)
 
 add_executable(sim sim.cc ${sources} ${headers})
 target_link_libraries(sim ${Geant4_LIBRARIES})

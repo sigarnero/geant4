@@ -113,6 +113,7 @@ preinstall/fast:
 
 # clear depends
 depend:
+	$(CMAKE_COMMAND) -P /home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/build2/CMakeFiles/VerifyGlobs.cmake
 	$(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
@@ -382,6 +383,30 @@ tracking.cc.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sim.dir/build.make CMakeFiles/sim.dir/tracking.cc.s
 .PHONY : tracking.cc.s
 
+witness.o: witness.cc.o
+.PHONY : witness.o
+
+# target to build an object file
+witness.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sim.dir/build.make CMakeFiles/sim.dir/witness.cc.o
+.PHONY : witness.cc.o
+
+witness.i: witness.cc.i
+.PHONY : witness.i
+
+# target to preprocess a source file
+witness.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sim.dir/build.make CMakeFiles/sim.dir/witness.cc.i
+.PHONY : witness.cc.i
+
+witness.s: witness.cc.s
+.PHONY : witness.s
+
+# target to generate assembly for a file
+witness.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sim.dir/build.make CMakeFiles/sim.dir/witness.cc.s
+.PHONY : witness.cc.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -422,6 +447,9 @@ help:
 	@echo "... tracking.o"
 	@echo "... tracking.i"
 	@echo "... tracking.s"
+	@echo "... witness.o"
+	@echo "... witness.i"
+	@echo "... witness.s"
 .PHONY : help
 
 
@@ -433,6 +461,7 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
+	$(CMAKE_COMMAND) -P /home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/build2/CMakeFiles/VerifyGlobs.cmake
 	$(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

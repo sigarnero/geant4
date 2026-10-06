@@ -1,6 +1,7 @@
 #include "construction.hh"
 #include "event.hh"
 #include "detector.hh"
+#include "witness.hh"
 
 MyDetectorConstruction::MyDetectorConstruction(){
     fMessenger = new G4GenericMessenger(this, "/detector/", "Detector construction");
@@ -28,11 +29,13 @@ MyDetectorConstruction::MyDetectorConstruction(){
     skin_1 = nullptr;                   // ADD THIS LINE (optional but good practice)
     solidStructure = nullptr;      // NEW
     logicStructure = nullptr;
+    solidWitness = nullptr;
+    logicWitness = nullptr;
 
     nCols = 50;
     nRows = 50;
 
-    radiatorThickness = 5.0*mm;
+    radiatorThickness = 25.0*mm;
 
     DefineMaterial();
 
@@ -61,6 +64,11 @@ void MyDetectorConstruction::ConstructSDandField(){
     
     if(logicDetector != NULL){
         logicDetector->SetSensitiveDetector(sensDet);
+    }
+
+    MyWitnessSD *witnessSD = new MyWitnessSD("WitnessSD");
+    if(logicWitness != NULL){
+        logicWitness->SetSensitiveDetector(witnessSD);
     }
     
     // NEW: Connect to EventAction for coincidence analysis
@@ -285,7 +293,7 @@ void MyDetectorConstruction::ConstructFusedSilica(){
         delete solidRadiator;
     }
     
-    solidRadiator = new G4Box("solidRadiator", 150.0*mm, 15.0*mm, radiatorThickness);
+    solidRadiator = new G4Box("solidRadiator", 150.0*mm, 25.0*mm, radiatorThickness);
     
     // Ricrea anche il logicRadiator per applicare le modifiche
     if(logicRadiator != nullptr) {
@@ -321,8 +329,8 @@ void MyDetectorConstruction::ConstructFusedSilica(){
         delete solidDetector;
     }
 
-    // solidDetector = new G4Box("solidDetector", 0.1*mm, 25.0*mm, 25.0*mm);    // Detector grande
-    solidDetector = new G4Box("solidDetector", 0.1*mm, 2.0*mm, 2.0*mm);    // 4x4 mm
+    solidDetector = new G4Box("solidDetector", 0.1*mm, 25.0*mm, radiatorThickness);    // Detector grande
+    // solidDetector = new G4Box("solidDetector", 0.1*mm, 3.0*mm, 3.0*mm);    // 6x6 mm
 
     if(logicDetector != nullptr){
         delete logicDetector;
@@ -341,12 +349,44 @@ void MyDetectorConstruction::ConstructFusedSilica(){
     physDetector = new G4PVPlacement(transformDet1, logicDetector, "physDetector", logicWorld, false, 0, true);
     physDetector = new G4PVPlacement(transformDet2, logicDetector, "physDetector", logicWorld, false, 1, true);
 
+    // --- Pannelli "testimone" per il flusso di secondarie dal polietilene ---
+    // Piano X-Y (normale lungo Z), a monte (-Z) del radiatore, stessa quota X dei
+    // SiPM. Materiale = worldMat (aria): non perturba la fisica, serve solo a
+    // contare cosa arriverebbe sull'elettronica se fosse lì.
+    // NOTA: se in futuro riattivi il tilt (tiltAngle != 0), la posizione X dei
+    // SiPM cambia tramite rotAssembly/detOffsetPlus-Minus; questa X va allineata
+    // di conseguenza (oggi coincide perché tiltAngle = 0).
+    if(solidWitness != nullptr){ delete solidWitness; }
+
+    const G4double witnessHalfX = 25.0*mm;   // pannello 5x5 cm
+    const G4double witnessHalfY = 25.0*mm;
+    const G4double witnessHalfZ = 1.0*mm;    // sottile
+    const G4double gapFromRadiator = 10.0*mm; // margine per evitare overlap
+
+    solidWitness = new G4Box("solidWitness", witnessHalfX, witnessHalfY, witnessHalfZ);
+
+    if(logicWitness != nullptr){ delete logicWitness; }
+    logicWitness = new G4LogicalVolume(solidWitness, worldMat, "logicWitness");
+
+    G4VisAttributes *witnessVisAtt = new G4VisAttributes(G4Colour(1,1,0,0.3));
+    witnessVisAtt->SetForceWireframe(true);
+    logicWitness->SetVisAttributes(witnessVisAtt);
+
+    // Z calcolato in funzione di radiatorThickness, non hardcoded
+    const G4double witnessZ = 0.150*m - radiatorThickness - gapFromRadiator - witnessHalfZ;
+
+    physWitness = new G4PVPlacement(0, G4ThreeVector( 152.5*mm, 0, witnessZ),
+                                     logicWitness, "physWitness", logicWorld, false, 0, true);
+    physWitness = new G4PVPlacement(0, G4ThreeVector(-152.5*mm, 0, witnessZ),
+                                     logicWitness, "physWitness", logicWorld, false, 1, true);
+
+
     // --- Strato sottile di polietilene, 10 cm prima della faccia d'ingresso del radiatore ---
     if(solidStructure != nullptr){
         delete solidStructure;
     }
     
-    const G4double structureHalfThickness = 10.0*mm;   // 0.5 = 1 mm totale
+    const G4double structureHalfThickness = 2.5*mm;   // 0.5 = 1 mm totale
     const G4double structureHalfX         = 50.0*mm;  // sezione 10x10 cm, ampiamente sufficiente rispetto a sigma=6mm del fascio
     const G4double structureHalfY         = 15.0*mm;  // sezione 10x10 cm, ampiamente sufficiente rispetto a sigma=6mm del fascio
     
@@ -355,9 +395,10 @@ void MyDetectorConstruction::ConstructFusedSilica(){
     if(logicStructure != nullptr){
         delete logicStructure;
     }
-    logicStructure = new G4LogicalVolume(solidStructure, Polythilene, "logicStructure");
+    // logicStructure = new G4LogicalVolume(solidStructure, Polythilene, "logicStructure");
+    logicStructure = new G4LogicalVolume(solidStructure, Al, "logicStructure");
     
-    G4VisAttributes *structureVisAtt = new G4VisAttributes(G4Colour(0.2, 0.6, 0.2, 0.5));
+    G4VisAttributes *structureVisAtt = new G4VisAttributes(G4Colour(0.8, 0.1, 0.1, 0.5));
     structureVisAtt->SetForceSolid(true);
     logicStructure->SetVisAttributes(structureVisAtt);
     
@@ -368,6 +409,16 @@ void MyDetectorConstruction::ConstructFusedSilica(){
     
     physStructure = new G4PVPlacement(0, G4ThreeVector(0, 0, structureZ),
                                        logicStructure, "physStructure", logicWorld, false, 0, true);
+    
+    // --- Witness aggiuntivo: subito dopo lo strato di Al, sull'asse del fascio ---
+    // Riusa lo stesso logicWitness (stessa SD, stesso ntuple WitnessHits) dei
+    // pannelli esistenti: il nuovo copyNumber (2) lo separa automaticamente
+    // tramite il campo "side" già scritto in witness.cc.
+    const G4double gapAfterAl = 5.0*mm;   // margine anti-overlap, aggiustabile
+    const G4double witnessAlZ = structureZ + structureHalfThickness + gapAfterAl + witnessHalfZ;
+
+    physWitness = new G4PVPlacement(0, G4ThreeVector(0, 0, witnessAlZ),
+                                     logicWitness, "physWitness", logicWorld, false, 2, true);                                   
 }
 
 void MyDetectorConstruction::ConstructCherenkov(){
@@ -727,6 +778,7 @@ void MyDetectorConstruction::DefineMaterial(){
 
     // Polietilene per lo strato sottile lungo il fascio
     Polythilene = nist->FindOrBuildMaterial("G4_POLYETHYLENE");
+    Al = nist->FindOrBuildMaterial("G4_Al");
 
     G4int nEntries = 22;
     // G4double energy[nEntries] = {1.239841939*eV/0.9, 1.239841939*eV/0.636, 1.239841939*eV/0.554, 1.239841939*eV/0.517, 1.239841939*eV/0.466, 
@@ -757,28 +809,9 @@ void MyDetectorConstruction::DefineMaterial(){
     1.239841939*eV/0.19340};
 
     G4double rindexSiO2[nEntries] = {
-    1.5602,
-    1.5084,
-    1.4941,
-    1.4888,
-    1.4845,
-    1.4798,
-    1.4761,
-    1.4746,
-    1.4696,
-    1.4667,
-    1.4635,
-    1.4631,
-    1.4607,
-    1.4601,
-    1.4585,
-    1.4584,
-    1.4570,
-    1.4567,
-    1.4564,
-    1.4552,
-    1.4525,
-    1.4502};
+    1.4502, 1.4525, 1.4552, 1.4564, 1.4567, 1.4570, 1.4584, 1.4585,
+    1.4601, 1.4607, 1.4631, 1.4635, 1.4667, 1.4696, 1.4746, 1.4761,
+    1.4798, 1.4845, 1.4888, 1.4941, 1.5084, 1.5602};
 
     G4double rindexAerogel[2] = {1.1, 1.1}; // range of refractive index
     G4double rindexAir[2] = {1.0, 1.0}; 

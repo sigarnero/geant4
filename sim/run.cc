@@ -133,6 +133,21 @@ MyRunAction::MyRunAction(){
     man->CreateNtupleIColumn("fTransmitted");    // 1 = escaped (FresnelRefraction), 0 = TIR
     man->CreateNtupleDColumn("fWavelength");     // nm
     man->FinishNtuple(14);
+
+    man->CreateNtuple("WitnessHits", "Particelle che raggiungono i pannelli testimone accanto ai SiPM");
+    man->CreateNtupleIColumn("fEvent");
+    man->CreateNtupleIColumn("fSide");        // 0 = +X (destro), 1 = -X (sinistro)
+    man->CreateNtupleIColumn("fTrackID");
+    man->CreateNtupleIColumn("fParentID");    // 0 = primario
+    man->CreateNtupleIColumn("fPDG");
+    man->CreateNtupleDColumn("fKinE");        // MeV
+    man->CreateNtupleDColumn("fEdep");        // MeV (atteso ~0, vedi nota)
+    man->CreateNtupleDColumn("fX");
+    man->CreateNtupleDColumn("fY");
+    man->CreateNtupleDColumn("fZ");
+    man->CreateNtupleDColumn("fTime");        // ns
+    man->CreateNtupleDColumn("fAngleFromAxis");  // deg, rispetto all'asse Z (fascio)
+    man->FinishNtuple(15);   // <-- ADATTA all'indice libero reale
 }
 
 MyRunAction::~MyRunAction(){}

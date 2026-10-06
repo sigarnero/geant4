@@ -58,5 +58,11 @@
   "command": "/usr/bin/c++ -DG4LIB_BUILD_DLL -DG4UI_USE_QT -DG4VIS_USE_OPENGLQT -DG4VIS_USE_RAYTRACERX -DG4VIS_USE_RAYTRACER_QT -DG4VIS_USE_TOOLSSG_QT_GLES -DG4VIS_USE_TOOLSSG_QT_ZB -DPTL_BUILD_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -isystem /home/sgarnero/Geant4/geant4-v11.4.1/include/Geant4 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -fPIC -o CMakeFiles/sim.dir/tracking.cc.o -c /home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/tracking.cc",
   "file": "/home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/tracking.cc",
   "output": "CMakeFiles/sim.dir/tracking.cc.o"
+},
+{
+  "directory": "/home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/build2",
+  "command": "/usr/bin/c++ -DG4LIB_BUILD_DLL -DG4UI_USE_QT -DG4VIS_USE_OPENGLQT -DG4VIS_USE_RAYTRACERX -DG4VIS_USE_RAYTRACER_QT -DG4VIS_USE_TOOLSSG_QT_GLES -DG4VIS_USE_TOOLSSG_QT_ZB -DPTL_BUILD_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB -isystem /home/sgarnero/Geant4/geant4-v11.4.1/include/Geant4 -isystem /usr/include/x86_64-linux-gnu/qt6/QtCore -isystem /usr/include/x86_64-linux-gnu/qt6 -isystem /usr/lib/x86_64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/x86_64-linux-gnu/qt6/QtGui -isystem /usr/include/x86_64-linux-gnu/qt6/QtWidgets -fPIC -o CMakeFiles/sim.dir/witness.cc.o -c /home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/witness.cc",
+  "file": "/home/sgarnero/BeamMonitorMu2e/geant4Simul/geant4/sim/witness.cc",
+  "output": "CMakeFiles/sim.dir/witness.cc.o"
 }
 ]

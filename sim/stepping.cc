@@ -121,8 +121,8 @@ void MySteppingAction::UserSteppingAction(const G4Step *step){
             G4ThreeVector exitDir = preStepPoint->GetMomentumDirection();
 
             const G4double barHalfLength = 150.0*mm;
-            const G4double barHalfY      = 15.0*mm;
-            const G4double barHalfZ      = 5.0*mm;          // = radiatorThickness for this run
+            const G4double barHalfY      = 16.0*mm;
+            const G4double barHalfZ      = 13.0*mm;          // = radiatorThickness for this run
             const G4double posTolerance  = 1.0*um;
 
             const G4ThreeVector radiatorPivot(0, 0, 150.0*mm);  // must match construction.cc's pivot! If change tilt angle it breaks!!
@@ -162,11 +162,11 @@ void MySteppingAction::UserSteppingAction(const G4Step *step){
             } else {
                 static G4int nFaceMatchFail = 0;
                 nFaceMatchFail++;
-                if(nFaceMatchFail % 100 == 1){  // don't flood stdout
-                    G4cerr << "FirstBounce: face match failed at pos ("
-                           << exitPos.x()/mm << ", " << exitPos.y()/mm << ", " << exitPos.z()/mm
-                           << ") mm" << G4endl;
-                }
+                // if(nFaceMatchFail % 100 == 1){  // don't flood stdout
+                //     G4cerr << "FirstBounce: face match failed at pos ("
+                //            << exitPos.x()/mm << ", " << exitPos.y()/mm << ", " << exitPos.z()/mm
+                //            << ") mm" << G4endl;
+                // }
             }
         }
 

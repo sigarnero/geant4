@@ -14,6 +14,7 @@
 #include "detector.hh"
 #include "run.hh"
 #include "generator.hh"
+#include "witness.hh"
 
 
 int main(int argc, char** argv) {
